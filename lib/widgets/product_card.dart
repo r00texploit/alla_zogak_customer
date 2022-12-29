@@ -110,8 +110,10 @@ class _ProductCardState extends State<ProductCard> {
     cart = Provider.of<CartBloc>(context);
     wishlist = Provider.of<WishlistBloc>(context);
     cart.verify(widget.product.id);
+    var mq =MediaQuery.of(context).size; 
     return Container(
-      padding: const EdgeInsets.all(5),
+      padding: const EdgeInsets.only(left: 5,right: 5,top: 5),
+      
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Colors.white,
@@ -136,7 +138,7 @@ class _ProductCardState extends State<ProductCard> {
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 SizedBox(
-                  height: 120,
+                  height: 100,
                   child: Stack(
                     children: [
                       if (widget.hero)
@@ -182,64 +184,66 @@ class _ProductCardState extends State<ProductCard> {
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            "${widget.product.discount != null ? (widget.product.price / (widget.product.discount! * 0.1)).ceil() : widget.product.price} ج.س",
-                            style: GoogleFonts.cairo().copyWith(
-                              fontWeight: FontWeight.w400,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                          if (widget.product.discount != null)
+                SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          children: [
                             Text(
-                              "${widget.product.price} ج.س",
+                              "${widget.product.discount != null ? (widget.product.price / (widget.product.discount! * 0.1)).ceil() : widget.product.price} ج.س",
                               style: GoogleFonts.cairo().copyWith(
                                 fontWeight: FontWeight.w400,
-                                color: Colors.red,
-                                fontSize: 11,
-                                decoration: TextDecoration.lineThrough,
                               ),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                             ),
-                        ],
-                      ),
-                      if (widget.product.productOptions != null &&
-                          widget.product.productOptions!.isNotEmpty &&
-                          widget.product.productOptions![0].productOptionValues
-                                  ?.length !=
-                              null &&
-                          widget.product.productOptions![0].productOptionValues!
-                              .isNotEmpty)
-                        GestureDetector(
-                          onTap: () => addOrRemove(),
-                          child: Container(
-                            width: 33,
-                            height: 33,
-                            decoration: BoxDecoration(
-                                color: loading ? Colors.white : Colors.grey,
-                                borderRadius: BorderRadius.circular(50)),
-                            child: Center(
-                              child: !loading
-                                  ? Icon(
-                                      cart.verify(widget.product.id)
-                                          ? Icons.remove_shopping_cart
-                                          : Icons.add_shopping_cart,
-                                      size: 22,
-                                      color: Colors.white,
-                                    )
-                                  : const CircularProgressIndicator(),
+                            if (widget.product.discount != null)
+                              Text(
+                                "${widget.product.price} ج.س",
+                                style: GoogleFonts.cairo().copyWith(
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.red,
+                                  fontSize: 11,
+                                  decoration: TextDecoration.lineThrough,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                          ],
+                        ),
+                        if (widget.product.productOptions != null &&
+                            widget.product.productOptions!.isNotEmpty &&
+                            widget.product.productOptions![0].productOptionValues
+                                    ?.length !=
+                                null &&
+                            widget.product.productOptions![0].productOptionValues!
+                                .isNotEmpty)
+                          GestureDetector(
+                            onTap: () => addOrRemove(),
+                            child: Container(
+                              width: 33,
+                              height: 33,
+                              decoration: BoxDecoration(
+                                  color: loading ? Colors.white : Colors.grey,
+                                  borderRadius: BorderRadius.circular(50)),
+                              child: Center(
+                                child: !loading
+                                    ? Icon(
+                                        cart.verify(widget.product.id)
+                                            ? Icons.remove_shopping_cart
+                                            : Icons.add_shopping_cart,
+                                        size: 22,
+                                        color: Colors.white,
+                                      )
+                                    : const CircularProgressIndicator(),
+                              ),
                             ),
-                          ),
-                        )
-                    ],
+                          )
+                      ],
+                    ),
                   ),
                 )
               ],

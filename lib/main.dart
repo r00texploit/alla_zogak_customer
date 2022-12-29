@@ -3,7 +3,6 @@ import 'package:alla_zogak_customer/widgets/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../models/products.dart';
 import '../providers/address_provider.dart';
 import '../providers/cart_provider.dart';
@@ -14,12 +13,14 @@ import 'screens/Landing/splash.dart';
 import 'screens/home_page.dart';
 import 'screens/product_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final savedThemeMode = await AdaptiveTheme.getThemeMode();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.dark,
+    statusBarIconBrightness: Brightness.light,
   ));
 
   runApp(MultiProvider(
@@ -29,27 +30,22 @@ void main() async {
       ChangeNotifierProvider(create: (_) => AddressBloc()),
       ChangeNotifierProvider(create: (_) => UserBloc())
     ],
-   
-    child:  const MyApp(),
-    )
-  );
+    child: MyApp(savedThemeMode: savedThemeMode),
+  ));
 }
 
 class MyApp extends StatelessWidget {
-   const MyApp({Key? key}) : super(key: key);
+  final AdaptiveThemeMode? savedThemeMode;
+  const MyApp({Key? key, this.savedThemeMode}) : super(key: key);
 
-
-  
   @override
   Widget build(BuildContext context) {
-    
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Super Digital Market',
       // ignore: unrelated_type_equality_checks
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      //themeMode: themeProvider.isdarkmode ? ThemeMode.dark : ThemeMode.light,
+      theme: Constants.lightmode,
+      darkTheme: AdaptiveTheme.of(context).darkTheme,
       initialRoute: "/",
       onGenerateRoute: (settings) {
         switch (settings.name) {
@@ -77,6 +73,4 @@ class MyApp extends StatelessWidget {
       ],
     );
   }
-
- 
 }

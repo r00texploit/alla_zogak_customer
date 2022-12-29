@@ -29,7 +29,7 @@ class BuildShimmer extends StatelessWidget {
                     highlightColor: Colors.grey[100]!,
                     child: SizedBox(
                       height: 120,
-                      width: MediaQuery.of(context).size.width / 2 - 20,
+                      width: MediaQuery.of(context).size.width / 2 - 10,
                     ),
                   ),
                 );

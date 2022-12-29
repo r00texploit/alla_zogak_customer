@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:alla_zogak_customer/screens/profile.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
@@ -60,19 +61,18 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                             child: CachedNetworkImage(
                               imageUrl:
                                   "https://yoo2.smart-node.net${user.user?.avatar}",
-                              errorWidget: (context, url, error) => Image.network(
-                                                  "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541",
-                                                  fit: BoxFit.fill,
-                                                  scale: 1,
-                                                  errorBuilder: (context, error,
-                                                      stackTrace) {
-                                                    if (kDebugMode) {
-                                                      print(error);
-                                                    }
-                                                    return const Icon(
-                                                        Icons.info);
-                                                  },
-                                                ),
+                              errorWidget: (context, url, error) =>
+                                  Image.network(
+                                "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541",
+                                fit: BoxFit.fill,
+                                scale: 1,
+                                errorBuilder: (context, error, stackTrace) {
+                                  if (kDebugMode) {
+                                    print(error);
+                                  }
+                                  return const Icon(Icons.info);
+                                },
+                              ),
                             ),
                           ),
                         ),
@@ -219,12 +219,12 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   ),
                 ),
                 InkWell(
-                  onTap: () async {
-                    setState(
-                  () {
-                    
-                  },
-                );
+                  onTap: () {
+                    AdaptiveTheme.of(context).toggleThemeMode();
+                    //   setState(
+                    // ()  {
+                    //   /},
+                    // );
                   },
                   child: ListTile(
                     leading: const Icon(
