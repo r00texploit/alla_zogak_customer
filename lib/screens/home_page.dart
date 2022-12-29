@@ -1,4 +1,3 @@
-
 import 'package:alla_zogak_customer/widgets/drawer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 // import 'package:cached_network_image/cached_network_image.dart';
@@ -6,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'package:provider/provider.dart';
 import '../api/category.dart';
 import '../models/categories.dart';
@@ -368,19 +368,31 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: CarouselSlider.builder(
                           itemBuilder: (context, i, realIndex) {
                             return CachedNetworkImage(
-                              imageUrl: caro[i],
-                              placeholder: (context, url) =>
-                                  const CircularProgressIndicator(),
-                              errorWidget: (context, url, error) => Image.asset(
-                                "assets/3.png",
-                                fit: BoxFit.cover,
-                                scale: 1,
-                                key: GlobalKey(),
-                                errorBuilder: (context, error, stackTrace) =>
-                                    const Icon(Icons.info),
-                              ),
-                              fit: BoxFit.fitWidth,
-                            );
+                                                imageUrl:
+                                                    caro[i],
+                                                progressIndicatorBuilder:
+                                                    (context, url,
+                                                            downloadProgress) =>
+                                                        CircularProgressIndicator(
+                                                            value:
+                                                                downloadProgress
+                                                                    .progress),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        Image.asset(
+                                                  "assets/3.png",
+                                                  fit: BoxFit.fill,
+                                                  scale: 1,
+                                                  errorBuilder: (context, error,
+                                                      stackTrace) {
+                                                    if (kDebugMode) {
+                                                      print(error);
+                                                    }
+                                                    return const Icon(
+                                                        Icons.info);
+                                                  },
+                                                ),
+                                              );
                           },
                           itemCount: caro.length,
                           options: CarouselOptions(
@@ -442,6 +454,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                         width: 45,
                                         height: 45,
                                         child: categories[index].photo != null
+                                            // ? Image(
+                                            //     image: PCacheImage(
+                                            //         "https://yoo2.smart-node.net${categories[index].photo}",
+                                            //         enableCache: true,
+                                            //         enableInMemory: true))
                                             ? CachedNetworkImage(
                                                 imageUrl:
                                                     "https://yoo2.smart-node.net${categories[index].photo}",
@@ -458,7 +475,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   "assets/3.png",
                                                   fit: BoxFit.fill,
                                                   scale: 1,
-                                                  key: GlobalKey(),
                                                   errorBuilder: (context, error,
                                                       stackTrace) {
                                                     if (kDebugMode) {
@@ -468,7 +484,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         Icons.info);
                                                   },
                                                 ),
-                                                fit: BoxFit.fitWidth,
                                               )
                                             : Image.asset(
                                                 "assets/3.png",
@@ -609,7 +624,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                                           Icons.info);
                                                     },
                                                   ),
-                                                  fit: BoxFit.fitWidth,
                                                 )
                                               : Image.asset(
                                                   "assets/3.png",

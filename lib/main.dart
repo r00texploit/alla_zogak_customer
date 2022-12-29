@@ -29,26 +29,27 @@ void main() async {
       ChangeNotifierProvider(create: (_) => AddressBloc()),
       ChangeNotifierProvider(create: (_) => UserBloc())
     ],
-    child: const MyApp(),
-  ));
+   
+    child:  const MyApp(),
+    )
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+   const MyApp({Key? key}) : super(key: key);
 
-  // _initTheme() async {
-  //   final sh = await SharedPreferences.getInstance();
-  //   await sh.setBool("theme", Constants.isdarkmode);
-  // }
 
+  
   @override
   Widget build(BuildContext context) {
-    Future<bool?> sh = Constants.getThemeInstance();
+    
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Super Di',
+      title: 'Super Digital Market',
       // ignore: unrelated_type_equality_checks
-      theme: sh != false ? Constants.lightmode : Constants.darkmode,
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      //themeMode: themeProvider.isdarkmode ? ThemeMode.dark : ThemeMode.light,
       initialRoute: "/",
       onGenerateRoute: (settings) {
         switch (settings.name) {
@@ -76,4 +77,6 @@ class MyApp extends StatelessWidget {
       ],
     );
   }
+
+ 
 }

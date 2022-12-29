@@ -1,7 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+
+
 import 'package:provider/provider.dart';
 import '../models/product_colors.dart';
 import '../models/products.dart';
@@ -427,23 +431,39 @@ class _ProductScState extends State<ProductSc> with TickerProviderStateMixin {
                                     borderRadius: BorderRadius.circular(25),
                                   ),
                                   child: Center(
-                                    child: CachedNetworkImage(
-                                      imageUrl:
-                                          "https://yoo2.smart-node.net${widget.product.productImages![i].image}",
-                                      placeholder: (context, url) =>
-                                          const CircularProgressIndicator(),
-                                      errorWidget: (context, url, error) =>
-                                          Image.asset(
-                                        "assets/3.png",
-                                        fit: BoxFit.fill,
-                                        scale: 1,
-                                        key: GlobalKey(),
-                                        errorBuilder:
-                                            (context, error, stackTrace) =>
-                                                const Icon(Icons.info),
-                                      ),
-                                      fit: BoxFit.fitWidth,
-                                    ),
+                                    child:CachedNetworkImage(
+                                                imageUrl:
+                                                    "https://yoo2.smart-node.net${widget.product.productImages![i].image}",
+                                                progressIndicatorBuilder:
+                                                    (context, url,
+                                                            downloadProgress) =>
+                                                        CircularProgressIndicator(
+                                                            value:
+                                                                downloadProgress
+                                                                    .progress),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        Image.asset(
+                                                  "assets/3.png",
+                                                  fit: BoxFit.fill,
+                                                  scale: 1,
+                                                  errorBuilder: (context, error,
+                                                      stackTrace) {
+                                                    if (kDebugMode) {
+                                                      print(error);
+                                                    }
+                                                    return const Icon(
+                                                        Icons.info);
+                                                  },
+                                                ),
+                                              ), 
+                                    // Image(
+                                    //   image: PCacheImage(
+                                    //       "https://yoo2.smart-node.net${widget.product.productImages![i].image}",
+                                    //       enableCache: true,
+                                    //       enableInMemory: true),
+                                    //   fit: BoxFit.fill,
+                                    // ),
                                   ),
                                 );
                               },
@@ -505,18 +525,23 @@ class _ProductScState extends State<ProductSc> with TickerProviderStateMixin {
                         child: CachedNetworkImage(
                           imageUrl:
                               "https://yoo2.smart-node.net${widget.product.productImages![i].image}",
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(),
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) =>
+                                  CircularProgressIndicator(
+                                      value: downloadProgress.progress),
                           errorWidget: (context, url, error) => Image.asset(
                             "assets/3.png",
                             fit: BoxFit.fill,
                             scale: 1,
-                            key: GlobalKey(),
-                            errorBuilder: (context, error, stackTrace) =>
-                                const Icon(Icons.info),
+                            errorBuilder: (context, error, stackTrace) {
+                              if (kDebugMode) {
+                                print(error);
+                              }
+                              return const Icon(Icons.info);
+                            },
                           ),
-                          fit: BoxFit.fitWidth,
                         ),
+                        // )
                       ),
                     ),
                   ),

@@ -198,23 +198,10 @@ class _ListItemState extends State<ListItem> {
   bool loading = false;
   Widget prepareImage(String uri) {
     try {
-      return CachedNetworkImage(
-        imageUrl: uri,
-        progressIndicatorBuilder: (context, url, downloadProgress) =>
-            CircularProgressIndicator(value: downloadProgress.progress),
-        errorWidget: (context, url, error) => Image.asset(
-          "assets/3.png",
+      return Image.network(
+        uri,
           fit: BoxFit.fill,
-          scale: 1,
-          key: GlobalKey(),
-          errorBuilder: (context, error, stackTrace) {
-            if (kDebugMode) {
-              print(error);
-            }
-            return const Icon(Icons.info);
-          },
-        ),
-        fit: BoxFit.fitWidth,
+        
       );
     } catch (e) {
       if (kDebugMode) {

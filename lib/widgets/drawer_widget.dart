@@ -1,5 +1,6 @@
 import 'package:alla_zogak_customer/screens/profile.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -55,13 +56,23 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                           backgroundColor: Theme.of(context).primaryColor,
                           radius: 30,
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
+                            borderRadius: BorderRadius.circular(60),
                             child: CachedNetworkImage(
                               imageUrl:
                                   "https://yoo2.smart-node.net${user.user?.avatar}",
-                              errorWidget: (context, url, error) => const Icon(
-                                Icons.person,
-                              ),
+                              errorWidget: (context, url, error) => Image.network(
+                                                  "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541",
+                                                  fit: BoxFit.fill,
+                                                  scale: 1,
+                                                  errorBuilder: (context, error,
+                                                      stackTrace) {
+                                                    if (kDebugMode) {
+                                                      print(error);
+                                                    }
+                                                    return const Icon(
+                                                        Icons.info);
+                                                  },
+                                                ),
                             ),
                           ),
                         ),
@@ -209,12 +220,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 ),
                 InkWell(
                   onTap: () async {
-                    setState(() async {
-                      final sh = await SharedPreferences.getInstance();
-                      bool? darktheme = await sh.getBool("theme");
-                      await sh.setBool(
-                          "theme", darktheme == true ? false : true);
-                    });
+                    setState(
+                  () {
+                    
+                  },
+                );
                   },
                   child: ListTile(
                     leading: const Icon(
@@ -234,6 +244,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               onTap: () async {
                 final sh = await SharedPreferences.getInstance();
                 await sh.remove("token");
+                // ignore: use_build_context_synchronously
                 Navigator.pushReplacementNamed(context, 'login');
               },
               child: ListTile(
