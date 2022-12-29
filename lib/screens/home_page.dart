@@ -1,6 +1,7 @@
-import 'package:alla_zogak_customer/models/category_options.dart';
+
 import 'package:alla_zogak_customer/widgets/drawer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+// import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

@@ -1,7 +1,9 @@
 import 'package:alla_zogak_customer/providers/wishlist_provider.dart';
+import 'package:alla_zogak_customer/widgets/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/products.dart';
 import '../providers/address_provider.dart';
 import '../providers/cart_provider.dart';
@@ -34,32 +36,19 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  // _initTheme() async {
+  //   final sh = await SharedPreferences.getInstance();
+  //   await sh.setBool("theme", Constants.isdarkmode);
+  // }
+
   @override
   Widget build(BuildContext context) {
+    Future<bool?> sh = Constants.getThemeInstance();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Super Di',
-      theme: ThemeData(
-        //primarySwatch: Colors.yellow,
-        textTheme: TextTheme(
-          headline1: GoogleFonts.cairo().copyWith(color: Colors.black54),
-          headline2: GoogleFonts.cairo().copyWith(color: Colors.black54),
-          headline3: GoogleFonts.cairo().copyWith(color: Colors.black54),
-          headline4: GoogleFonts.cairo().copyWith(color: Colors.black54),
-          headline5: GoogleFonts.cairo().copyWith(color: Colors.black54),
-          headline6: GoogleFonts.cairo().copyWith(color: Colors.black54),
-          subtitle1: GoogleFonts.cairo().copyWith(color: Colors.black54),
-          subtitle2: GoogleFonts.cairo().copyWith(color: Colors.black54),
-        ),
-        iconTheme: const IconThemeData(
-          color: Colors.grey,
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          labelStyle: GoogleFonts.cairo().copyWith(
-            color: Colors.black,
-          )
-        )
-      ),
+      // ignore: unrelated_type_equality_checks
+      theme: sh != false ? Constants.lightmode : Constants.darkmode,
       initialRoute: "/",
       onGenerateRoute: (settings) {
         switch (settings.name) {

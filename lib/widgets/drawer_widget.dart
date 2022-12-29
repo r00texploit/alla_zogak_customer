@@ -5,6 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'package:alla_zogak_customer/widgets/constants.dart';
+
 import '../providers/user_provider.dart';
 import '../providers/wishlist_provider.dart';
 import '../screens/my_orders_drawer.dart';
@@ -162,7 +165,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                             ],
                           ),
                           title: Text(
-                            "قائمة الرقبات",
+                            "قائمة الرغبات",
                             style: GoogleFonts.cairo().copyWith(
                               fontSize: 15,
                             ),
@@ -202,6 +205,27 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                         color: Theme.of(context).primaryColor,
                       ),
                     ],
+                  ),
+                ),
+                InkWell(
+                  onTap: () async {
+                    setState(() async {
+                      final sh = await SharedPreferences.getInstance();
+                      bool? darktheme = await sh.getBool("theme");
+                      await sh.setBool(
+                          "theme", darktheme == true ? false : true);
+                    });
+                  },
+                  child: ListTile(
+                    leading: const Icon(
+                      Icons.dark_mode,
+                    ),
+                    title: Text(
+                      "المظهر الليلي",
+                      style: GoogleFonts.cairo().copyWith(
+                        fontSize: 15,
+                      ),
+                    ),
                   ),
                 ),
               ],
