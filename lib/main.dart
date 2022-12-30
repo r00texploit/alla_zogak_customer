@@ -1,5 +1,6 @@
 import 'package:alla_zogak_customer/providers/wishlist_provider.dart';
 import 'package:alla_zogak_customer/widgets/constants.dart';
+import 'package:alla_zogak_customer/widgets/theme/theme_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -40,37 +41,44 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Super Digital Market',
-      // ignore: unrelated_type_equality_checks
-      theme: Constants.lightmode,
-      darkTheme: AdaptiveTheme.of(context).darkTheme,
-      initialRoute: "/",
-      onGenerateRoute: (settings) {
-        switch (settings.name) {
-          case "intro":
-            return MaterialPageRoute(builder: (_) => const IntroSliderScreen());
-          case "login":
-            return MaterialPageRoute(builder: (_) => const LoginScreen());
-          case "home":
-            return MaterialPageRoute(builder: (_) => const HomePage());
-          case "product":
-            return MaterialPageRoute(
-                builder: (_) => ProductSc(
-                      product: settings.arguments as Products,
-                    ));
-          default:
-            return MaterialPageRoute(builder: (_) => const SplashScreen());
-        }
-      },
-      locale: const Locale("ar", "SA"),
-      supportedLocales: const [Locale("ar", "SA")],
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-    );
+    return ChangeNotifierProvider(
+        create: (_) => ThemeModel(),
+        child: Consumer<ThemeModel>(
+            builder: (context, ThemeModel themeNotifier, child) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Super Digital Market',
+            // ignore: unrelated_type_equality_checks
+            theme:
+                themeNotifier.isDark ? Constants.darkmode : Constants.lightmode,
+            initialRoute: "/",
+            onGenerateRoute: (settings) {
+              switch (settings.name) {
+                case "intro":
+                  return MaterialPageRoute(
+                      builder: (_) => const IntroSliderScreen());
+                case "login":
+                  return MaterialPageRoute(builder: (_) => const LoginScreen());
+                case "home":
+                  return MaterialPageRoute(builder: (_) => const HomePage());
+                case "product":
+                  return MaterialPageRoute(
+                      builder: (_) => ProductSc(
+                            product: settings.arguments as Products,
+                          ));
+                default:
+                  return MaterialPageRoute(
+                      builder: (_) => const SplashScreen());
+              }
+            },
+            locale: const Locale("ar", "SA"),
+            supportedLocales: const [Locale("ar", "SA")],
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+          );
+        }));
   }
 }

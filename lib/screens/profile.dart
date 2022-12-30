@@ -155,7 +155,7 @@ class _MyProfileState extends State<MyProfile> {
                           });
                         },
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(100.0),
+                          borderRadius: BorderRadius.circular(30),
                           child: uploading
                               ? const CircularProgressIndicator()
                               : Image.network(

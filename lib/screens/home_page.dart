@@ -1,4 +1,5 @@
 import 'package:alla_zogak_customer/widgets/drawer_widget.dart';
+import 'package:alla_zogak_customer/widgets/theme/theme_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 // import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -166,15 +167,16 @@ class _HomePageState extends State<HomePage> {
       children: pages,
     );
   }
-
+ThemeModel themeNotifier = ThemeModel();
   @override
   Widget build(BuildContext context) {
     cart = Provider.of<CartBloc>(context);
     user = Provider.of<UserBloc>(context);
     wishlist = Provider.of<WishlistBloc>(context);
+    
     return Scaffold(
       key: _key,
-      backgroundColor: Colors.white,
+      backgroundColor: themeNotifier.isDark != true ? Colors.black :Colors.white,
       drawer: const DrawerWidget(),
       appBar: AppBar(
         elevation: 0,
@@ -242,6 +244,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool loading = false;
   List<Products> _productList = [];
   Future<void>? _initProductData;
+  ThemeModel themeNotifier = ThemeModel();
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -435,6 +438,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Padding(
                                 padding: const EdgeInsets.only(right: 15),
                                 child: Container(
+                                  //color: themeNotifier.isDark != true ? Colors.black :Colors.white,
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 20,
                                     vertical: 3,
@@ -454,11 +458,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                         width: 45,
                                         height: 45,
                                         child: categories[index].photo != null
-                                            // ? Image(
-                                            //     image: PCacheImage(
-                                            //         "https://yoo2.smart-node.net${categories[index].photo}",
-                                            //         enableCache: true,
-                                            //         enableInMemory: true))
                                             ? CachedNetworkImage(
                                                 imageUrl:
                                                     "https://yoo2.smart-node.net${categories[index].photo}",
@@ -509,6 +508,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       categories[index].nameAr,
                                                       style: GoogleFonts.cairo()
                                                           .copyWith(
+                                                        color: Theme.of(context).primaryColor,
                                                         fontSize: 13,
                                                         fontWeight:
                                                             FontWeight.bold,
