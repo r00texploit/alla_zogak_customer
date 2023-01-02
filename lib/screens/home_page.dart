@@ -38,9 +38,13 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
   Widget _buildBottomBar() {
+    //var brightness = MediaQuery.of(context).platformBrightness;
+    if (kDebugMode) {
+      print(themeNotifier.isDark);
+    }
     return BottomNavigationBar(
       // containerHeight: 70,
-      backgroundColor: Colors.white,
+      backgroundColor: themeNotifier.isDark ? Colors.black : Colors.white,
       selectedLabelStyle: GoogleFonts.cairo().copyWith(color: Colors.black54),
       unselectedLabelStyle: GoogleFonts.cairo().copyWith(color: Colors.black54),
       selectedItemColor: Colors.black,
@@ -167,18 +171,20 @@ class _HomePageState extends State<HomePage> {
       children: pages,
     );
   }
-ThemeModel themeNotifier = ThemeModel();
+
+  ThemeModel themeNotifier = ThemeModel();
   @override
   Widget build(BuildContext context) {
     cart = Provider.of<CartBloc>(context);
     user = Provider.of<UserBloc>(context);
     wishlist = Provider.of<WishlistBloc>(context);
-    
+
     return Scaffold(
       key: _key,
-      backgroundColor: themeNotifier.isDark != true ? Colors.black :Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       drawer: const DrawerWidget(),
       appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
         elevation: 0,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -193,6 +199,7 @@ ThemeModel themeNotifier = ThemeModel();
           child: const Icon(
             Icons.menu,
             size: 35,
+            color: Colors.grey,
           ),
         ),
         title: Row(
@@ -206,6 +213,7 @@ ThemeModel themeNotifier = ThemeModel();
         ),
         actions: [
           IconButton(
+            color: Colors.grey,
             onPressed: () {
               Navigator.push(
                 context,
@@ -341,6 +349,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var brightness = MediaQuery.of(context).platformBrightness;
     user = Provider.of<UserBloc>(context);
     return Scaffold(
       body: status == 200
@@ -371,31 +380,23 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: CarouselSlider.builder(
                           itemBuilder: (context, i, realIndex) {
                             return CachedNetworkImage(
-                                                imageUrl:
-                                                    caro[i],
-                                                progressIndicatorBuilder:
-                                                    (context, url,
-                                                            downloadProgress) =>
-                                                        CircularProgressIndicator(
-                                                            value:
-                                                                downloadProgress
-                                                                    .progress),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        Image.asset(
-                                                  "assets/3.png",
-                                                  fit: BoxFit.fill,
-                                                  scale: 1,
-                                                  errorBuilder: (context, error,
-                                                      stackTrace) {
-                                                    if (kDebugMode) {
-                                                      print(error);
-                                                    }
-                                                    return const Icon(
-                                                        Icons.info);
-                                                  },
-                                                ),
-                                              );
+                              imageUrl: caro[i],
+                              progressIndicatorBuilder:
+                                  (context, url, downloadProgress) =>
+                                      CircularProgressIndicator(
+                                          value: downloadProgress.progress),
+                              errorWidget: (context, url, error) => Image.asset(
+                                "assets/3.png",
+                                fit: BoxFit.fill,
+                                scale: 1,
+                                errorBuilder: (context, error, stackTrace) {
+                                  if (kDebugMode) {
+                                    print(error);
+                                  }
+                                  return const Icon(Icons.info);
+                                },
+                              ),
+                            );
                           },
                           itemCount: caro.length,
                           options: CarouselOptions(
@@ -425,145 +426,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           scrollDirection: Axis.horizontal,
                           itemCount: categories.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  selectedCat = categories[index].id;
-                                  catOption =
-                                      categories[index].categoryOptions![0].id;
-                                  currentPage = 1;
-                                });
-                                _initProductData = _initProducts();
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 15),
-                                child: Container(
-                                  //color: themeNotifier.isDark != true ? Colors.black :Colors.white,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                    vertical: 3,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Theme.of(context)
-                                        .primaryColor
-                                        .withOpacity(
-                                            categories[index].id == selectedCat
-                                                ? 0.5
-                                                : 0),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      SizedBox(
-                                        width: 45,
-                                        height: 45,
-                                        child: categories[index].photo != null
-                                            ? CachedNetworkImage(
-                                                imageUrl:
-                                                    "https://yoo2.smart-node.net${categories[index].photo}",
-                                                progressIndicatorBuilder:
-                                                    (context, url,
-                                                            downloadProgress) =>
-                                                        CircularProgressIndicator(
-                                                            value:
-                                                                downloadProgress
-                                                                    .progress),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        Image.asset(
-                                                  "assets/3.png",
-                                                  fit: BoxFit.fill,
-                                                  scale: 1,
-                                                  errorBuilder: (context, error,
-                                                      stackTrace) {
-                                                    if (kDebugMode) {
-                                                      print(error);
-                                                    }
-                                                    return const Icon(
-                                                        Icons.info);
-                                                  },
-                                                ),
-                                              )
-                                            : Image.asset(
-                                                "assets/3.png",
-                                                fit: BoxFit.fill,
-                                                scale: 1,
-                                                errorBuilder: (context, error,
-                                                    stackTrace) {
-                                                  if (kDebugMode) {
-                                                    print(error);
-                                                  }
-                                                  return const Icon(Icons.info);
-                                                },
-                                              ),
-                                      ),
-                                      Center(
-                                          child: categories[index].id ==
-                                                  selectedCat
-                                              ? Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      categories[index].nameAr,
-                                                      style: GoogleFonts.cairo()
-                                                          .copyWith(
-                                                        color: Theme.of(context).primaryColor,
-                                                        fontSize: 13,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )
-                                              : Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      categories[index].nameAr,
-                                                      style: GoogleFonts.cairo()
-                                                          .copyWith(
-                                                        fontSize: 13,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.black87,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      if (selectedCat != null)
-                        Container(
-                          height: 100,
-                          width: MediaQuery.of(context).size.width,
-                          decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  topRight: Radius.circular(10))),
-                          padding: const EdgeInsets.all(5),
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: categories
-                                .firstWhere((el) => el.id == selectedCat)
-                                .categoryOptions
-                                ?.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return GestureDetector(
+                            return Material(
+                              color: selectedCat != null && selectedCat == index
+                                  ? Colors.black
+                                  : Colors.white,
+                              child: GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    catOption = categories
-                                        .firstWhere(
-                                            (el) => el.id == selectedCat)
-                                        .categoryOptions![index]
+                                    selectedCat = categories[index].id;
+                                    catOption = categories[index]
+                                        .categoryOptions![0]
                                         .id;
                                     currentPage = 1;
                                   });
@@ -572,36 +444,32 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: Padding(
                                   padding: const EdgeInsets.only(right: 15),
                                   child: Container(
-                                    height: 25,
+                                    //color: themeNotifier.isDark != true ? Colors.black :Colors.white,
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
+                                      horizontal: 20,
+                                      vertical: 3,
+                                    ),
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(25),
-                                      color: Theme.of(context)
-                                          .primaryColor
-                                          .withOpacity(categories
-                                                      .firstWhere((el) =>
-                                                          el.id == selectedCat)
-                                                      .categoryOptions![index]
-                                                      .id ==
-                                                  catOption
-                                              ? 0.6
-                                              : 0),
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: themeNotifier.isDark
+                                          ? Colors.white
+                                          : Theme.of(context)
+                                              .primaryColor
+                                              .withOpacity(
+                                                  categories[index].id ==
+                                                          selectedCat
+                                                      ? 0.5
+                                                      : 0),
                                     ),
                                     child: Column(
                                       children: [
                                         SizedBox(
                                           width: 45,
                                           height: 45,
-                                          child: categories
-                                                      .firstWhere((el) =>
-                                                          el.id == selectedCat)
-                                                      .categoryOptions![index]
-                                                      .photo !=
-                                                  null
+                                          child: categories[index].photo != null
                                               ? CachedNetworkImage(
                                                   imageUrl:
-                                                      "https://yoo2.smart-node.net${categories.firstWhere((el) => el.id == selectedCat).categoryOptions![index].photo}",
+                                                      "https://yoo2.smart-node.net${categories[index].photo}",
                                                   progressIndicatorBuilder: (context,
                                                           url,
                                                           downloadProgress) =>
@@ -640,57 +508,224 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 ),
                                         ),
                                         Center(
-                                          child: categories
-                                                      .firstWhere((el) =>
-                                                          el.id == selectedCat)
-                                                      .categoryOptions![index]
-                                                      .id ==
-                                                  catOption
-                                              ? Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      categories
-                                                          .firstWhere((el) =>
-                                                              el.id ==
-                                                              selectedCat)
-                                                          .categoryOptions![
-                                                              index]
-                                                          .categoryOption,
-                                                      style: GoogleFonts.cairo()
-                                                          .copyWith(
-                                                        fontSize: 13,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                            child: categories[index].id ==
+                                                    selectedCat
+                                                ? Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        categories[index]
+                                                            .nameAr,
+                                                        style:
+                                                            GoogleFonts.cairo()
+                                                                .copyWith(
+                                                          color: Colors.black,
+                                                          fontSize: 13,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                )
-                                              : Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      categories
-                                                          .firstWhere((el) =>
-                                                              el.id ==
-                                                              selectedCat)
-                                                          .categoryOptions![
-                                                              index]
-                                                          .categoryOption,
-                                                      style: GoogleFonts.cairo()
-                                                          .copyWith(
-                                                        fontSize: 13,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.black87,
+                                                    ],
+                                                  )
+                                                : Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        categories[index]
+                                                            .nameAr,
+                                                        style:
+                                                            GoogleFonts.cairo()
+                                                                .copyWith(
+                                                          fontSize: 13,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors
+                                                              .black87, // here
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                        ),
+                                                    ],
+                                                  )),
                                       ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      if (selectedCat != null)
+                        Container(
+                          height: 100,
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                              color: themeNotifier.isDark
+                                  ? Theme.of(context).primaryColor : Colors.white,
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10))),
+                          padding: const EdgeInsets.all(5),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: categories
+                                .firstWhere((el) => el.id == selectedCat)
+                                .categoryOptions
+                                ?.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Material(
+                                color: selectedCat == index && index != 2
+                                    ? Colors.black
+                                    : Colors.white,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      catOption = categories
+                                          .firstWhere(
+                                              (el) => el.id == selectedCat)
+                                          .categoryOptions![index]
+                                          .id;
+                                      currentPage = 1;
+                                    });
+                                    _initProductData = _initProducts();
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 15),
+                                    child: Container(
+                                      height: 25,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(25),
+                                        color: themeNotifier.isDark
+                                            ? Colors.white
+                                            : Theme.of(context)
+                                                .primaryColor
+                                                .withOpacity(categories
+                                                            .firstWhere((el) =>
+                                                                el.id ==
+                                                                selectedCat)
+                                                            .categoryOptions![
+                                                                index]
+                                                            .id ==
+                                                        catOption
+                                                    ? 0.6
+                                                    : 0),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            width: 45,
+                                            height: 45,
+                                            child: categories
+                                                        .firstWhere((el) =>
+                                                            el.id ==
+                                                            selectedCat)
+                                                        .categoryOptions![index]
+                                                        .photo !=
+                                                    null
+                                                ? CachedNetworkImage(
+                                                    imageUrl:
+                                                        "https://yoo2.smart-node.net${categories.firstWhere((el) => el.id == selectedCat).categoryOptions![index].photo}",
+                                                    progressIndicatorBuilder: (context,
+                                                            url,
+                                                            downloadProgress) =>
+                                                        CircularProgressIndicator(
+                                                            value:
+                                                                downloadProgress
+                                                                    .progress),
+                                                    errorWidget:
+                                                        (context, url, error) =>
+                                                            Image.asset(
+                                                      "assets/3.png",
+                                                      fit: BoxFit.fill,
+                                                      scale: 1,
+                                                      errorBuilder: (context,
+                                                          error, stackTrace) {
+                                                        if (kDebugMode) {
+                                                          print(error);
+                                                        }
+                                                        return const Icon(
+                                                            Icons.info);
+                                                      },
+                                                    ),
+                                                  )
+                                                : Image.asset(
+                                                    "assets/3.png",
+                                                    fit: BoxFit.fill,
+                                                    scale: 1,
+                                                    errorBuilder: (context,
+                                                        error, stackTrace) {
+                                                      if (kDebugMode) {
+                                                        print(error);
+                                                      }
+                                                      return const Icon(
+                                                          Icons.info);
+                                                    },
+                                                  ),
+                                          ),
+                                          Center(
+                                            child: categories
+                                                        .firstWhere((el) =>
+                                                            el.id ==
+                                                            selectedCat)
+                                                        .categoryOptions![index]
+                                                        .id ==
+                                                    catOption
+                                                ? Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        categories
+                                                            .firstWhere((el) =>
+                                                                el.id ==
+                                                                selectedCat)
+                                                            .categoryOptions![
+                                                                index]
+                                                            .categoryOption,
+                                                        style:
+                                                            GoogleFonts.cairo()
+                                                                .copyWith(
+                                                          fontSize: 13,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                                : Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        categories
+                                                            .firstWhere((el) =>
+                                                                el.id ==
+                                                                selectedCat)
+                                                            .categoryOptions![
+                                                                index]
+                                                            .categoryOption,
+                                                        style:
+                                                            GoogleFonts.cairo()
+                                                                .copyWith(
+                                                          fontSize: 13,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.black87,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

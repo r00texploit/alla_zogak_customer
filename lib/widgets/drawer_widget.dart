@@ -39,6 +39,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         builder: (context, ThemeModel themeNotifier, child) {
       return SafeArea(
         child: Drawer(
+          backgroundColor: themeNotifier.isDark ? Colors.white : Theme.of(context).primaryColor,
           width: MediaQuery.of(context).size.width * 0.7,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -99,7 +100,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     ),
                   Divider(
                     thickness: 2,
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                   ),
                   SingleChildScrollView(
                     child: Column(
@@ -119,8 +120,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                           ),
                         ),
                         Divider(
-                          thickness: 0.5,
-                          color: Theme.of(context).primaryColor,
+                          thickness: 1,
+                          color: Theme.of(context).scaffoldBackgroundColor,
                         ),
                         InkWell(
                           onTap: () => open(const MyOrderDrawer()),
@@ -137,8 +138,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                           ),
                         ),
                         Divider(
-                          thickness: 0.5,
-                          color: Theme.of(context).primaryColor,
+                          thickness: 1,
+                          color: Theme.of(context).scaffoldBackgroundColor,
                         ),
                         InkWell(
                           onTap: () => open(const WishlistDrawer()),
@@ -160,7 +161,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                         color: Colors.white,
                                         border: Border.all(
                                             color:
-                                                Theme.of(context).primaryColor),
+                                                Theme.of(context).scaffoldBackgroundColor),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Center(
@@ -188,8 +189,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                           ),
                         ),
                         Divider(
-                          thickness: 0.5,
-                          color: Theme.of(context).primaryColor,
+                          thickness: 1,
+                          color: Theme.of(context).scaffoldBackgroundColor,
                         ),
                         InkWell(
                           onTap: () async {
@@ -216,8 +217,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                           ),
                         ),
                         Divider(
-                          thickness: 0.5,
-                          color: Theme.of(context).primaryColor,
+                          thickness: 1,
+                          color: Theme.of(context).scaffoldBackgroundColor,
                         ),
                       ],
                     ),

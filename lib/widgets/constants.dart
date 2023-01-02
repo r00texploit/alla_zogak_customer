@@ -30,7 +30,7 @@ class Constants {
 
   static Map<int, Color> color = {
     50: const Color.fromRGBO(136, 14, 79, .1),
-    100:const Color.fromARGB(8, 136, 14, 79),
+    100: const Color.fromARGB(8, 136, 14, 79),
     200: const Color.fromARGB(123, 10, 0, 6),
     300: const Color.fromARGB(102, 20, 1, 11),
     400: const Color.fromARGB(126, 51, 39, 45),
@@ -40,10 +40,10 @@ class Constants {
     800: const Color.fromARGB(227, 24, 15, 20),
     900: const Color.fromARGB(255, 15, 3, 9),
   };
-static MaterialColor colorCustom = MaterialColor(0xFF000000, color);
+  static MaterialColor colorCustom = MaterialColor(0xFF000000, color);
   static ThemeData lightmode = ThemeData(
       primarySwatch: Colors.yellow,
-      textTheme: TextTheme(
+        textTheme: TextTheme(
         headline1: GoogleFonts.cairo().copyWith(color: Colors.black54),
         headline2: GoogleFonts.cairo().copyWith(color: Colors.black54),
         headline3: GoogleFonts.cairo().copyWith(color: Colors.black54),
@@ -61,35 +61,29 @@ static MaterialColor colorCustom = MaterialColor(0xFF000000, color);
         color: Colors.black,
       )));
 
+  // static ThemeData darkmode = ThemeData(
+  //   primaryColor: Colors.black,
+  //   brightness: Brightness.dark,
+  //   backgroundColor: const Color(0xFF212121),
+  //   dividerColor: Colors.black12, colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey).copyWith(secondary: Colors.white),
+  // );
+
   static ThemeData darkmode = ThemeData(
-      primaryColor: Colors.white,
       primarySwatch: colorCustom,
       scaffoldBackgroundColor: colorCustom,
-      bottomAppBarColor: colorCustom,
+      bottomAppBarColor: Colors.grey,
+      //brightness: Brightness.dark,
       shadowColor: darkBG,
-      bottomNavigationBarTheme:   BottomNavigationBarThemeData(
-        backgroundColor: Colors.white70,
-        elevation: 10,
-        selectedLabelStyle: const TextStyle(
-            color: Color.fromARGB(255, 8, 8, 8), fontSize: 14.0
-        ),
-        unselectedLabelStyle: GoogleFonts.cairo(
-            color: const Color.fromARGB(255, 175, 169, 169), fontSize: 12.0
-        ),
-        selectedItemColor: const Color.fromARGB(255, 63, 62, 60),
-        unselectedItemColor: Colors.grey[600],
-        showUnselectedLabels: true,
-    ),
-      //backgroundColor: const Color.fromARGB(255, 248, 246, 246),
+      cardColor: Colors.grey,
       textTheme: TextTheme(
-        headline1: GoogleFonts.cairo().copyWith(color: Colors.black54),
-        headline2: GoogleFonts.cairo().copyWith(color: Colors.black54),
-        headline3: GoogleFonts.cairo().copyWith(color: Colors.black54),
-        headline4: GoogleFonts.cairo().copyWith(color: Colors.black54),
-        headline5: GoogleFonts.cairo().copyWith(color: Colors.black54),
-        headline6: GoogleFonts.cairo().copyWith(color: Colors.black54),
-        subtitle1: GoogleFonts.cairo().copyWith(color: Colors.black54),
-        subtitle2: GoogleFonts.cairo().copyWith(color: Colors.black54),
+        headline1: GoogleFonts.cairo().copyWith(color: Colors.white54),
+        headline2: GoogleFonts.cairo().copyWith(color: Colors.white54),
+        headline3: GoogleFonts.cairo().copyWith(color: Colors.white54),
+        headline4: GoogleFonts.cairo().copyWith(color: Colors.white54),
+        headline5: GoogleFonts.cairo().copyWith(color: Colors.white54),
+        headline6: GoogleFonts.cairo().copyWith(color: Colors.white54),
+        subtitle1: GoogleFonts.cairo().copyWith(color: Colors.white54),
+        subtitle2: GoogleFonts.cairo().copyWith(color: Colors.white54),
       ),
       iconTheme: const IconThemeData(
         color: Colors.grey,
@@ -97,5 +91,7 @@ static MaterialColor colorCustom = MaterialColor(0xFF000000, color);
       inputDecorationTheme: InputDecorationTheme(
           labelStyle: GoogleFonts.cairo().copyWith(
         color: Colors.grey,
-      )), colorScheme: ColorScheme.fromSwatch(primarySwatch: colorCustom).copyWith(secondary: Colors.white));
+      )),
+      colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey)
+          .copyWith(secondary: Colors.white));
 }

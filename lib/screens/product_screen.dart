@@ -4,8 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
-
 import 'package:provider/provider.dart';
 import '../models/product_colors.dart';
 import '../models/products.dart';
@@ -175,54 +173,58 @@ class _ProductScState extends State<ProductSc> with TickerProviderStateMixin {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if (colorized && colors.isNotEmpty)
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                verticalDirection: VerticalDirection.up,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(colors.length, (i) {
-                  return GestureDetector(
-                    onTap: () => changeColor(i),
-                    child: Container(
-                      width: 35,
-                      height: 35,
-                      decoration: BoxDecoration(
-                        color: Color.fromRGBO(
-                            colors[i].r, colors[i].g, colors[i].b, 1),
-                        border: Border.all(
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      margin: const EdgeInsets.symmetric(horizontal: 5),
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Stack(
-                          children: [
-                            if (colorIndex == i)
-                              Positioned(
-                                child: Container(
-                                  width: 15,
-                                  height: 15,
-                                  color: Theme.of(context).primaryColor,
-                                  child: const Icon(
-                                    Icons.done,
-                                    size: 15,
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                }),
-              ),
-            ),
-          const SizedBox(
-            height: 15,
-          ),
+          //if (colorized && colors.isNotEmpty)
+            // SingleChildScrollView(
+            //   scrollDirection: Axis.horizontal,
+            //   child: Row(
+            //     verticalDirection: VerticalDirection.up,
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: List.generate(colors.length, (i) {
+            //       return GestureDetector(
+            //         onTap: () => changeColor(i),
+            //         child: ClipRRect(
+            //           borderRadius: BorderRadius.circular(10.0),
+            //           child: Container(
+            //             width: 35,
+            //             height: 35,
+            //             decoration: BoxDecoration(
+                          
+            //               color: Color.fromRGBO(
+            //                   colors[i].r, colors[i].g, colors[i].b, 1),
+            //               border: Border.all(
+            //                 color: Theme.of(context).primaryColor,
+            //               ),
+            //               borderRadius: BorderRadius.circular(50),
+            //             ),
+            //             margin: const EdgeInsets.symmetric(horizontal: 5),
+            //             child: Padding(
+            //               padding: const EdgeInsets.all(5.0),
+            //               child: Stack(
+            //                 children: [
+            //                   if (colorIndex == i)
+            //                     Positioned(
+            //                       child: Container(
+            //                         width: 15,
+            //                         height: 15,
+            //                         color: Theme.of(context).primaryColor,
+            //                         child: const Icon(
+            //                           Icons.done,
+            //                           size: 15,
+            //                         ),
+            //                       ),
+            //                     ),
+            //                 ],
+            //               ),
+            //             ),
+            //           ),
+            //         ),
+            //       );
+            //     }),
+            //   ),
+            // ),
+          // const SizedBox(
+          //   height: 15,
+          // ),
           if (values.isNotEmpty)
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -431,32 +433,27 @@ class _ProductScState extends State<ProductSc> with TickerProviderStateMixin {
                                     borderRadius: BorderRadius.circular(25),
                                   ),
                                   child: Center(
-                                    child:CachedNetworkImage(
-                                                imageUrl:
-                                                    "https://yoo2.smart-node.net${widget.product.productImages![i].image}",
-                                                progressIndicatorBuilder:
-                                                    (context, url,
-                                                            downloadProgress) =>
-                                                        CircularProgressIndicator(
-                                                            value:
-                                                                downloadProgress
-                                                                    .progress),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        Image.asset(
-                                                  "assets/3.png",
-                                                  fit: BoxFit.fill,
-                                                  scale: 1,
-                                                  errorBuilder: (context, error,
-                                                      stackTrace) {
-                                                    if (kDebugMode) {
-                                                      print(error);
-                                                    }
-                                                    return const Icon(
-                                                        Icons.info);
-                                                  },
-                                                ),
-                                              ), 
+                                    child: CachedNetworkImage(
+                                      imageUrl:
+                                          "https://yoo2.smart-node.net${widget.product.productImages![i].image}",
+                                      progressIndicatorBuilder: (context, url,
+                                              downloadProgress) =>
+                                          CircularProgressIndicator(
+                                              value: downloadProgress.progress),
+                                      errorWidget: (context, url, error) =>
+                                          Image.asset(
+                                        "assets/3.png",
+                                        fit: BoxFit.fill,
+                                        scale: 1,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          if (kDebugMode) {
+                                            print(error);
+                                          }
+                                          return const Icon(Icons.info);
+                                        },
+                                      ),
+                                    ),
                                     // Image(
                                     //   image: PCacheImage(
                                     //       "https://yoo2.smart-node.net${widget.product.productImages![i].image}",

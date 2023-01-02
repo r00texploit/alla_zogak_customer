@@ -44,6 +44,7 @@ class _MyOrderState extends State<MyOrder> {
                           child: Text(
                             "الطلبات الحالية",
                             style: GoogleFonts.cairo().copyWith(
+                              color: Theme.of(context).primaryColor,
                               fontSize: 18,
                             ),
                           ),
@@ -52,6 +53,7 @@ class _MyOrderState extends State<MyOrder> {
                       Tab(
                         child: Text("الطلبات السابقة",
                             style: GoogleFonts.cairo().copyWith(
+                              color: Colors.white,
                               fontSize: 18,
                             )),
                       )
@@ -170,8 +172,13 @@ class _OnGoingState extends State<OnGoing> {
                     case ConnectionState.done:
                       {
                         if (_orderList.isEmpty) {
-                          return const Center(
-                            child: Text("ليس هنالك طلبات"),
+                          return Center(
+                            child: Text(
+                              "ليس هنالك طلبات",
+                              style: GoogleFonts.cairo(
+                                color: Colors.white60,
+                              ),
+                            ),
                           );
                         } else {
                           return Column(
@@ -494,8 +501,13 @@ class _PastOrderState extends State<PastOrder> {
                   case ConnectionState.done:
                     {
                       if (_orderList.isEmpty) {
-                        return const Center(
-                          child: Text("ليس هنالك طلبات"),
+                        return Center(
+                          child: Text(
+                            "ليس هنالك طلبات",
+                            style: GoogleFonts.cairo(
+                              color: Colors.white60,
+                            ),
+                          ),
                         );
                       } else {
                         return Column(
@@ -511,6 +523,9 @@ class _PastOrderState extends State<PastOrder> {
             children: [
               if (currentPage != pages && pages != 0)
                 ElevatedButton.icon(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.white),
+                  ),
                   onPressed: () async {
                     if (!loading) {
                       await loadOrders();

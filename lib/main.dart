@@ -1,5 +1,6 @@
 import 'package:alla_zogak_customer/providers/wishlist_provider.dart';
 import 'package:alla_zogak_customer/widgets/constants.dart';
+import 'package:alla_zogak_customer/widgets/theme/style.dart';
 import 'package:alla_zogak_customer/widgets/theme/theme_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -49,7 +50,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'Super Digital Market',
             // ignore: unrelated_type_equality_checks
-            theme:
+            theme: //Styles.themeData(themeNotifier.isDark, context),
                 themeNotifier.isDark ? Constants.darkmode : Constants.lightmode,
             initialRoute: "/",
             onGenerateRoute: (settings) {

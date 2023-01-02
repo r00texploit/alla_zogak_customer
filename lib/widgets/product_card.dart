@@ -111,12 +111,15 @@ class _ProductCardState extends State<ProductCard> {
     wishlist = Provider.of<WishlistBloc>(context);
     cart.verify(widget.product.id);
     var mq =MediaQuery.of(context).size; 
+    var brightness = MediaQuery.of(context).platformBrightness;
     return Container(
       padding: const EdgeInsets.only(left: 5,right: 5,top: 5),
       
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: Colors.white,
+        color: brightness == Brightness.dark
+                                  ? Colors.grey
+                                  : Colors.white,
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
@@ -306,7 +309,7 @@ class _ProductCardState extends State<ProductCard> {
                                 ? Icons.favorite
                                 : Icons.favorite_border_sharp,
                             color: Colors.red,
-                            size: 35,
+                            size: 20, // fav size is here
                           )
                         : const SizedBox(
                             width: 35,
