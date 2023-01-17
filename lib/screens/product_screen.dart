@@ -174,54 +174,54 @@ class _ProductScState extends State<ProductSc> with TickerProviderStateMixin {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           //if (colorized && colors.isNotEmpty)
-            // SingleChildScrollView(
-            //   scrollDirection: Axis.horizontal,
-            //   child: Row(
-            //     verticalDirection: VerticalDirection.up,
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: List.generate(colors.length, (i) {
-            //       return GestureDetector(
-            //         onTap: () => changeColor(i),
-            //         child: ClipRRect(
-            //           borderRadius: BorderRadius.circular(10.0),
-            //           child: Container(
-            //             width: 35,
-            //             height: 35,
-            //             decoration: BoxDecoration(
-                          
-            //               color: Color.fromRGBO(
-            //                   colors[i].r, colors[i].g, colors[i].b, 1),
-            //               border: Border.all(
-            //                 color: Theme.of(context).primaryColor,
-            //               ),
-            //               borderRadius: BorderRadius.circular(50),
-            //             ),
-            //             margin: const EdgeInsets.symmetric(horizontal: 5),
-            //             child: Padding(
-            //               padding: const EdgeInsets.all(5.0),
-            //               child: Stack(
-            //                 children: [
-            //                   if (colorIndex == i)
-            //                     Positioned(
-            //                       child: Container(
-            //                         width: 15,
-            //                         height: 15,
-            //                         color: Theme.of(context).primaryColor,
-            //                         child: const Icon(
-            //                           Icons.done,
-            //                           size: 15,
-            //                         ),
-            //                       ),
-            //                     ),
-            //                 ],
-            //               ),
-            //             ),
-            //           ),
-            //         ),
-            //       );
-            //     }),
-            //   ),
-            // ),
+          // SingleChildScrollView(
+          //   scrollDirection: Axis.horizontal,
+          //   child: Row(
+          //     verticalDirection: VerticalDirection.up,
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: List.generate(colors.length, (i) {
+          //       return GestureDetector(
+          //         onTap: () => changeColor(i),
+          //         child: ClipRRect(
+          //           borderRadius: BorderRadius.circular(10.0),
+          //           child: Container(
+          //             width: 35,
+          //             height: 35,
+          //             decoration: BoxDecoration(
+
+          //               color: Color.fromRGBO(
+          //                   colors[i].r, colors[i].g, colors[i].b, 1),
+          //               border: Border.all(
+          //                 color: Theme.of(context).primaryColor,
+          //               ),
+          //               borderRadius: BorderRadius.circular(50),
+          //             ),
+          //             margin: const EdgeInsets.symmetric(horizontal: 5),
+          //             child: Padding(
+          //               padding: const EdgeInsets.all(5.0),
+          //               child: Stack(
+          //                 children: [
+          //                   if (colorIndex == i)
+          //                     Positioned(
+          //                       child: Container(
+          //                         width: 15,
+          //                         height: 15,
+          //                         color: Theme.of(context).primaryColor,
+          //                         child: const Icon(
+          //                           Icons.done,
+          //                           size: 15,
+          //                         ),
+          //                       ),
+          //                     ),
+          //                 ],
+          //               ),
+          //             ),
+          //           ),
+          //         ),
+          //       );
+          //     }),
+          //   ),
+          // ),
           // const SizedBox(
           //   height: 15,
           // ),
@@ -239,9 +239,9 @@ class _ProductScState extends State<ProductSc> with TickerProviderStateMixin {
                         minWidth: 40,
                       ),
                       decoration: BoxDecoration(
-                        color: valueIndex == i
-                            ? Theme.of(context).primaryColor
-                            : Colors.transparent,
+                        // color: valueIndex == i
+                        //     ? Theme.of(context).primaryColor
+                        //     : Colors.transparent,
                         borderRadius: BorderRadius.circular(50),
                       ),
                       margin: const EdgeInsets.symmetric(horizontal: 5),
@@ -278,29 +278,29 @@ class _ProductScState extends State<ProductSc> with TickerProviderStateMixin {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withOpacity(0.4),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        productss.name,
-                        style: GoogleFonts.cairo().copyWith(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          height: 1.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // Container(
+                //   decoration: BoxDecoration(
+                //     //color: Theme.of(context).primaryColor.withOpacity(0.4),
+                //     borderRadius: BorderRadius.circular(15),
+                //   ),
+                //   padding: const EdgeInsets.symmetric(
+                //     horizontal: 8,
+                //   ),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.start,
+                //     mainAxisSize: MainAxisSize.min,
+                //     children: [
+                //       Text(
+                //         productss.name,
+                //         style: GoogleFonts.cairo().copyWith(
+                //           fontSize: 24,
+                //           fontWeight: FontWeight.bold,
+                //           height: 1.5,
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: _buildProductOptions(context),
@@ -308,7 +308,7 @@ class _ProductScState extends State<ProductSc> with TickerProviderStateMixin {
                 const SizedBox(height: 5),
                 Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withOpacity(0.8),
+                    //color: Theme.of(context).primaryColor.withOpacity(0.8),
                     borderRadius: BorderRadius.circular(15),
                   ),
                   padding: const EdgeInsets.symmetric(
@@ -320,7 +320,7 @@ class _ProductScState extends State<ProductSc> with TickerProviderStateMixin {
                       Text(
                         "وصف المنتج",
                         style: GoogleFonts.cairo(
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -335,7 +335,7 @@ class _ProductScState extends State<ProductSc> with TickerProviderStateMixin {
                       Text(
                         productss.description,
                         style: GoogleFonts.cairo().copyWith(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
@@ -415,6 +415,7 @@ class _ProductScState extends State<ProductSc> with TickerProviderStateMixin {
                 if (widget.product.productImages != null &&
                     widget.product.productImages!.isNotEmpty)
                   Container(
+                    height: 240,
                     color: Colors.white,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -427,13 +428,13 @@ class _ProductScState extends State<ProductSc> with TickerProviderStateMixin {
                             CarouselSlider.builder(
                               itemBuilder: (context, i, realIndex) {
                                 return Container(
-                                  height: 200,
                                   width: MediaQuery.of(context).size.width,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(25),
                                   ),
                                   child: Center(
                                     child: CachedNetworkImage(
+                                      height: 240,
                                       imageUrl:
                                           "https://yoo2.smart-node.net${widget.product.productImages![i].image}",
                                       progressIndicatorBuilder: (context, url,
@@ -481,23 +482,23 @@ class _ProductScState extends State<ProductSc> with TickerProviderStateMixin {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 mainAxisSize: MainAxisSize.max,
-                                children: <Widget>[
-                                  ElevatedButton(
-                                    style: ButtonStyle(
-                                      shape: MaterialStateProperty.all(
-                                          const CircleBorder()),
-                                    ),
-                                    onPressed: () => _controller.previousPage(),
-                                    child: const Icon(Icons.arrow_back),
-                                  ),
-                                  ElevatedButton(
-                                    style: ButtonStyle(
-                                      shape: MaterialStateProperty.all(
-                                          const CircleBorder()),
-                                    ),
-                                    onPressed: () => _controller.nextPage(),
-                                    child: const Icon(Icons.arrow_forward),
-                                  ),
+                                children: const <Widget>[
+                                  // ElevatedButton(
+                                  //   style: ButtonStyle(
+                                  //     shape: MaterialStateProperty.all(
+                                  //         const CircleBorder()),
+                                  //   ),
+                                  //   onPressed: () => _controller.previousPage(),
+                                  //   child: const Icon(Icons.arrow_back),
+                                  // ),
+                                  // ElevatedButton(
+                                  //   style: ButtonStyle(
+                                  //     shape: MaterialStateProperty.all(
+                                  //         const CircleBorder()),
+                                  //   ),
+                                  //   onPressed: () => _controller.nextPage(),
+                                  //   child: const Icon(Icons.arrow_forward),
+                                  // ),
                                 ],
                               ),
                             ),
@@ -620,7 +621,7 @@ class _ProductScState extends State<ProductSc> with TickerProviderStateMixin {
                             ? Colors.white
                             : cart.verify(widget.product.id)
                                 ? Colors.redAccent.withOpacity(0.6)
-                                : Theme.of(context).primaryColor,
+                                : Colors.transparent,
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: Center(

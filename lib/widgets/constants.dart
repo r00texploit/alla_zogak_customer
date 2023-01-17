@@ -43,6 +43,7 @@ class Constants {
   static MaterialColor colorCustom = MaterialColor(0xFF000000, color);
   static ThemeData lightmode = ThemeData(
       primarySwatch: Colors.yellow,
+      // primaryColor: Colors.white,
         textTheme: TextTheme(
         headline1: GoogleFonts.cairo().copyWith(color: Colors.black54),
         headline2: GoogleFonts.cairo().copyWith(color: Colors.black54),
@@ -70,6 +71,8 @@ class Constants {
 
   static ThemeData darkmode = ThemeData(
       primarySwatch: colorCustom,
+      //primaryColor: Colors.grey,
+      primaryColorDark: Colors.white,
       scaffoldBackgroundColor: colorCustom,
       bottomAppBarColor: Colors.grey,
       //brightness: Brightness.dark,

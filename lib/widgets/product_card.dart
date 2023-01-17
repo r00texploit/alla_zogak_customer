@@ -110,16 +110,15 @@ class _ProductCardState extends State<ProductCard> {
     cart = Provider.of<CartBloc>(context);
     wishlist = Provider.of<WishlistBloc>(context);
     cart.verify(widget.product.id);
-    var mq =MediaQuery.of(context).size; 
+    var mq = MediaQuery.of(context).size;
     var brightness = MediaQuery.of(context).platformBrightness;
     return Container(
-      padding: const EdgeInsets.only(left: 5,right: 5,top: 5),
-      
+      width: mq.width,
+    
+      padding: const EdgeInsets.only(left: 5, right: 5, top: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: brightness == Brightness.dark
-                                  ? Colors.grey
-                                  : Colors.white,
+        color: brightness == Brightness.dark ? Colors.grey : Colors.white,
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
@@ -219,11 +218,11 @@ class _ProductCardState extends State<ProductCard> {
                         ),
                         if (widget.product.productOptions != null &&
                             widget.product.productOptions!.isNotEmpty &&
-                            widget.product.productOptions![0].productOptionValues
-                                    ?.length !=
+                            widget.product.productOptions![0]
+                                    .productOptionValues?.length !=
                                 null &&
-                            widget.product.productOptions![0].productOptionValues!
-                                .isNotEmpty)
+                            widget.product.productOptions![0]
+                                .productOptionValues!.isNotEmpty)
                           GestureDetector(
                             onTap: () => addOrRemove(),
                             child: Container(
