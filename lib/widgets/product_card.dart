@@ -1,3 +1,5 @@
+import 'package:alla_zogak_customer/screens/product_screen.dart';
+import 'package:alla_zogak_customer/widgets/theme/theme_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +26,7 @@ class ProductCard extends StatefulWidget {
   final Products product;
   final bool hero;
 
-  const ProductCard({Key? key, required this.product, this.hero = true})
+  const ProductCard({Key? key, required this.product, this.hero = false})
       : super(key: key);
 
   @override
@@ -111,14 +113,14 @@ class _ProductCardState extends State<ProductCard> {
     wishlist = Provider.of<WishlistBloc>(context);
     cart.verify(widget.product.id);
     var mq = MediaQuery.of(context).size;
-    var brightness = MediaQuery.of(context).platformBrightness;
+    // var brightness = MediaQuery.of(context).platformBrightness;
+    ThemeModel themeNotifier = ThemeModel();
     return Container(
       width: mq.width,
-    
       padding: const EdgeInsets.only(left: 5, right: 5, top: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: brightness == Brightness.dark ? Colors.grey : Colors.white,
+        color: themeNotifier.isDark ? Colors.grey : Colors.white,
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
@@ -130,7 +132,8 @@ class _ProductCardState extends State<ProductCard> {
       ),
       child: GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context, "product", arguments: widget.product);
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ProductSc(product: widget.product)));
         },
         child: Stack(
           children: [
@@ -307,7 +310,7 @@ class _ProductCardState extends State<ProductCard> {
                             wishlist.verify(widget.product.id)
                                 ? Icons.favorite
                                 : Icons.favorite_border_sharp,
-                            color: Colors.red,
+                            color: Colors.grey,
                             size: 20, // fav size is here
                           )
                         : const SizedBox(

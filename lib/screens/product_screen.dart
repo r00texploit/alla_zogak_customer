@@ -38,11 +38,11 @@ class _ProductScState extends State<ProductSc> with TickerProviderStateMixin {
     _animationController.addListener(() {
       setState(() {});
     });
-    if (widget.product.productOptions![0].productOptionValues != null) {
+    if (widget.product.productOptions!.length != null) {
       for (var i = 0;
-          i < widget.product.productOptions![0].productOptionValues!.length;
+          i < widget.product.productOptions!.first.productOptionValues!.length;
           i++) {
-        if (widget.product.productOptions![0].productOptionValues![i]
+        if (widget.product.productOptions!.first.productOptionValues![i]
                 .productColors !=
             null) {
           colorized = true;

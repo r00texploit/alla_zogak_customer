@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -63,17 +65,18 @@ Future<ResponseModel> getProductsBySub(
   da.setStatus(500);
   return da;
 }
-Future<ResponseModel> topTen() async {
+Future<ResponseModel> topTenProduct() async {
   try {
     final sh = await SharedPreferences.getInstance();
-    final res = await dio.post(
+    final res = await dio.get(
       "/top-ten-products",
       
       options: Options(
         headers: {"token": sh.getString("token")},
       ),
     );
-    return ResponseModel.fromJson(res.data);
+    log("data :${res.data}");
+    return ResponseModel.fromJson(res);
   } catch (e) {
     if (e is DioError) {
       if (kDebugMode) {

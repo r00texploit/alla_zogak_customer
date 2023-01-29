@@ -59,7 +59,7 @@ class _SelectAddressesWidgetState extends State<SelectAddressesWidget> {
               ),
             ),
             height: 5,
-            width: MediaQuery.of(context).size.width * .6,
+            width: MediaQuery.of(context).size.width * .8,
           ),
         ),
         if (!loading)
@@ -70,7 +70,7 @@ class _SelectAddressesWidgetState extends State<SelectAddressesWidget> {
                 vertical: 15,
               ),
               constraints: const BoxConstraints(
-                maxHeight: 220,
+                maxHeight: 176,
               ),
               child: Column(
                 children: [
@@ -86,8 +86,10 @@ class _SelectAddressesWidgetState extends State<SelectAddressesWidget> {
                     isEmpty: city.text.isEmpty,
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
+                        menuMaxHeight: 10,
+                        itemHeight: kMinInteractiveDimension,
                         value: city.text,
-                        // isDense: true,
+                        isDense: true,
                         onChanged: (String? newValue) {
                           setState(() {
                             city.text = newValue.toString();
@@ -111,7 +113,7 @@ class _SelectAddressesWidgetState extends State<SelectAddressesWidget> {
                     ),
                   ),
                   const SizedBox(
-                    height: 15,
+                    height: 10,
                   ),
                   TextFormField(
                     controller: address,

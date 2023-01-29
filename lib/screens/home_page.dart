@@ -1,14 +1,20 @@
+import 'dart:developer';
+
+import 'package:alla_zogak_customer/models/category_options.dart';
 import 'package:alla_zogak_customer/screens/sub_category.dart';
+import 'package:alla_zogak_customer/screens/top_ten.dart';
 import 'package:alla_zogak_customer/widgets/drawer_widget.dart';
 import 'package:alla_zogak_customer/widgets/theme/theme_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 // import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../api/category.dart';
 import '../models/categories.dart';
 import '../models/products.dart';
@@ -55,17 +61,17 @@ class _HomePageState extends State<HomePage> {
       selectedFontSize: 14,
       currentIndex: _currentIndex,
       onTap: (index) {
-        if (index == 2) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  SearchScreen(width: MediaQuery.of(context).size.width),
-            ),
-          );
-        } else {
-          setState(() => _currentIndex = index);
-        }
+        // if (index == 2) {
+        //   Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //       builder: (context) =>
+        //           SearchScreen(width: MediaQuery.of(context).size.width),
+        //     ),
+        //   );
+        // } else {
+        setState(() => _currentIndex = index);
+        // }
       },
       items: <BottomNavigationBarItem>[
         const BottomNavigationBarItem(
@@ -163,7 +169,7 @@ class _HomePageState extends State<HomePage> {
     List<Widget> pages = [
       const HomeScreen(),
       const MyCart(),
-      const Text(""),
+      // TopTenScreen(),
       const Wishlist(),
       const MyOrder(),
     ];
@@ -243,10 +249,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late UserBloc user;
+
   int status = 200;
   List<Categories> categories = [];
-  int? selectedCat;
-  int? catOption;
+  int? selectedCat = 0;
+  int? catOption = 0;
   int limit = 10;
   int currentPage = 1;
   int pages = 0;
@@ -254,43 +261,144 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Products> _productList = [];
   Future<void>? _initProductData;
   ThemeModel themeNotifier = ThemeModel();
-  
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       user.loadData(context);
     });
-    //loadCategories();
+    loadCategories();
     super.initState();
+    _initProductData = _initProducts();
   }
 
-  // loadCategories() async {
-  //   ResponseModel resp = await getAllCategories();
-  //   if (resp.success) {
-  //     List<Categories> list = List.generate(
-  //         resp.data.length, (i) => Categories.fromJson(resp.data[i]));
-  //     for (var cat in list) {
-  //       // ResponseModel subs = await getSubCategories(cat.id);
-  //       // cat.categoryOptions = List.generate(
-  //       //     subs.data.length, (i) => CategoryOptions.fromJson(subs.data[i]));
+  loadCategories() async {
+    ResponseModel resp = await getAllCategories();
+    if (resp.success) {
+      List<Categories> list = List.generate(
+          resp.data.length, (i) => Categories.fromJson(resp.data[i]));
+      for (var cat in list) {
+        ResponseModel subs = await getSubCategories(cat.id);
+        cat.categoryOptions = List.generate(
+            subs.data.length, (i) => CategoryOptions.fromJson(subs.data[i]));
+        setState(() {
+          if (cat.categoryOptions!.isNotEmpty) {
+            categories.add(cat);
+          }
+        });
+      }
+      selectedCat = categories[0].id;
+      catOption = categories[0].categoryOptions![0].id;
+      _initProductData = _initProducts();
+    } else {
+      if (kDebugMode) {
+        print(resp.message);
+      }
+    }
+  }
+
+  // Future<void> _initProducts() async {
+  //   try {
+  //     final sh = await SharedPreferences.getInstance();
+  //     final dio = Dio(BaseOptions(baseUrl: 'https://yoo2.smart-node.net/api'));
+  //     var list = await dio.get(
+  //       "/top-ten-products",
+  //       options: Options(
+  //         headers: {"token": sh.getString("token")},
+  //       ),
+  //     );
+
+  //     _productList = [];
+  //     log("data :${list.data["data"]}");
+  //     var prd;
+  //     for (var i = 0; i < list.data.length; i++) {
+  //       log("product $i: ${list.data["data"][i]}");
   //       setState(() {
-  //         if (cat.categoryOptions!.isNotEmpty) {
-  //           categories.add(cat);
-  //         }
+  //         prd = Products.fromJson(list.data["data"][i]);
+  //         _productList.add(Products.fromJson(list.data["data"][i]));
+
   //       });
   //     }
-  //     selectedCat = categories[0].id;
-  //     catOption = categories[0].categoryOptions![0].id;
-  //     _initProductData = _initProducts();
-  //   } else {
+
+  //     log("fdsa $prd");
+  //     if (!prd.id.isNegative) {
+  //       setState(() {
+  //         status = 200;
+  //         loading = true;
+  //       });
+  //       log("init :${prd.runtimeType}");
+
+  //       // if (prd.total != null) {
+  //       //   pages = (prd.total! / limit).ceil();
+  //       // }
+
+  //       //}}else{
+  //       setState(() {
+  //         loading = false;
+  //       });
+  //     }
+  //   } catch (e, s) {
   //     if (kDebugMode) {
-  //       print(resp.message);
+  //       print([e, s]);
   //     }
   //   }
   // }
 
+  Future<void> _initProducts() async {
+    setState(() {
+      loading = true;
+    });
+    currentPage++;
+    try {
+      ResponseModel list =
+          await getProductsBySub(catOption, limit, (limit * (currentPage - 1)));
+      for (var i = 0; i < list.data.length; i++) {
+        setState(() {
+          _productList.add(Products.fromJson(list.data[i]));
+        });
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+    setState(() {
+      loading = false;
+    });
+  }
+
+// int? status;\
+//   var catid;
+//   loadCategories() async {
+//     ResponseModel resp = await getAllCategories();
+//     if (resp.success) {
+//       List<Categories> list = List.generate(
+//           resp.data.length, (i) => Categories.fromJson(resp.data[i]));
+//       for (var cat in list) {
+//         ResponseModel subs = await getSubCategories(cat.id);
+//         cat.categoryOptions = List.generate(
+//             subs.data.length, (i) => CategoryOptions.fromJson(subs.data[i]));
+//         setState(() {
+//           if (cat.categoryOptions!.isNotEmpty) {
+//             categories.add(cat);
+//           }
+//         });
+//       }
+//       setState(() {
+//         catid = categories[selectedCat!].id;
+//         catOption = categories[selectedCat!].categoryOptions![selectedCat!].id;
+//         _initProductData = _initProducts();
+//       });
+//     } else {
+//       if (kDebugMode) {
+//         print(resp.message);
+//       }
+//     }
+//   }
+
   // Future<void> _initProducts() async {
   //   try {
+  //     log("cat ${catOption}");
   //     ResponseModel list =
   //         await getProductsBySub(catOption, limit, (limit * (currentPage - 1)));
   //     setState(() {
@@ -312,28 +420,28 @@ class _HomeScreenState extends State<HomeScreen> {
   //   }
   // }
 
-  // Future<void> loadProducts() async {
-  //   setState(() {
-  //     loading = true;
-  //   });
-  //   currentPage++;
-  //   try {
-  //     ResponseModel list =
-  //         await getProductsBySub(catOption, limit, (limit * (currentPage - 1)));
-  //     for (var i = 0; i < list.data.length; i++) {
-  //       setState(() {
-  //         _productList.add(Products.fromJson(list.data[i]));
-  //       });
-  //     }
-  //   } catch (e) {
-  //     if (kDebugMode) {
-  //       print(e);
-  //     }
-  //   }
-  //   setState(() {
-  //     loading = false;
-  //   });
-  // }
+  Future<void> loadProducts() async {
+    setState(() {
+      loading = true;
+    });
+    currentPage++;
+    try {
+      ResponseModel list =
+          await getProductsBySub(catOption, limit, (limit * (currentPage - 1)));
+      for (var i = 0; i < list.data.length; i++) {
+        setState(() {
+          _productList.add(Products.fromJson(list.data[i]));
+        });
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+    setState(() {
+      loading = false;
+    });
+  }
 
   refresh() async {
     setState(() {
@@ -354,8 +462,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var brightness = MediaQuery.of(context).platformBrightness;
     user = Provider.of<UserBloc>(context);
+    status = 200;
     return Scaffold(
       body: status == 200
           ? ScrollConfiguration(
@@ -405,11 +513,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                           itemCount: caro.length,
                           options: CarouselOptions(
-                            enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                            autoPlayCurve: Curves.easeInOutCubic,
-                            enlargeCenterPage: true,
-                            pauseAutoPlayOnManualNavigate: false,
+                            // enlargeStrategy: CenterPageEnlargeStrategy.zoom,
+                            // autoPlayCurve: Curves.easeInOutCubic,
+                            // enlargeCenterPage: true,
+                            // pauseAutoPlayOnManualNavigate: false,
+                            // enableInfiniteScroll: false,
+                            viewportFraction: 1,
+                            // aspectRatio: 2.0,
                             autoPlay: true,
+                            padEnds: false,
                           ),
                         ),
                       ),
@@ -417,7 +529,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 30,
                       ),
                       SubCategory(),
-                      
+
                       //           Container(
                       //             height: 100,
                       //             width: MediaQuery.of(context).size.width,
@@ -745,57 +857,58 @@ class _HomeScreenState extends State<HomeScreen> {
                       //     itemCount: 4,
                       //     crossItems: 2,
                       //   ),
-                      // if (_initProductData != null)
-                      //   FutureBuilder(
-                      //       future: _initProductData,
-                      //       builder: (c, snapshot) {
-                      //         switch (snapshot.connectionState) {
-                      //           case ConnectionState.none:
-                      //           case ConnectionState.waiting:
-                      //           case ConnectionState.active:
-                      //             {
-                      //               return const BuildShimmer(
-                      //                 itemCount: 4,
-                      //                 crossItems: 2,
-                      //               );
-                      //             }
-                      //           case ConnectionState.done:
-                      //             {
-                      //               if (_productList.isEmpty) {
-                      //                 return const Center(
-                      //                   child: Text("ليس هنالك منتجات"),
-                      //                 );
-                      //               } else {
-                      //                 return Wrap(
-                      //                   // padding: const EdgeInsets.all(20),
-                      //                   // crossAxisCount: 2,
-                      //                   // shrinkWrap: true,
-                      //                   // childAspectRatio: 0.8,
-                      //                   // physics: const BouncingScrollPhysics(),
-                      //                   // mainAxisSpacing: 15,
-                      //                   // crossAxisSpacing: 10,
-                      //                   children: List.generate(
-                      //                     _productList.length,
-                      //                     (i) {
-                      //                       return Padding(
-                      //                         padding: const EdgeInsets.all(5),
-                      //                         child: SizedBox(
-                      //                           width: MediaQuery.of(context)
-                      //                                       .size
-                      //                                       .width /
-                      //                                   2 -
-                      //                               20,
-                      //                           child: ProductCard(
-                      //                               product: _productList[i]),
-                      //                         ),
-                      //                       );
-                      //                     },
-                      //                   ),
-                      //                 );
-                      //               }
-                      //             }
-                      //         }
-                      //       }),
+                      if (_initProductData != null)
+                        FutureBuilder(
+                            future: _initProductData,
+                            builder: (c, snapshot) {
+                              switch (snapshot.connectionState) {
+                                case ConnectionState.none:
+                                case ConnectionState.waiting:
+                                case ConnectionState.active:
+                                  {
+                                    return const BuildShimmer(
+                                      itemCount: 4,
+                                      crossItems: 2,
+                                    );
+                                  }
+                                case ConnectionState.done:
+                                  {
+                                    if (_productList.isEmpty) {
+                                      return const Center(
+                                        child: Text("ليس هنالك منتجات"),
+                                      );
+                                    } else {
+                                      return Wrap(
+                                        // padding: const EdgeInsets.all(20),
+                                        // crossAxisCount: 2,
+                                        // shrinkWrap: true,
+                                        // childAspectRatio: 0.8,
+                                        // physics: const BouncingScrollPhysics(),
+                                        // mainAxisSpacing: 15,
+                                        // crossAxisSpacing: 10,
+                                        children: List.generate(
+                                          _productList.length,
+                                          (i) {
+                                            return Padding(
+                                              padding: const EdgeInsets.all(5),
+                                              child: SizedBox(
+                                                width: MediaQuery.of(context)
+                                                            .size
+                                                            .width /
+                                                        2 -
+                                                    20,
+                                                child: ProductCard(
+                                                    product: _productList[i]),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    }
+                                  }
+                              }
+                            }),
+                      //TopTenScreen()
                       // if (selectedCat != null)
                       //   Row(
                       //     mainAxisAlignment: MainAxisAlignment.center,
