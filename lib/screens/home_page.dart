@@ -267,35 +267,35 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       user.loadData(context);
     });
-    loadCategories();
+    // loadCategories();
     super.initState();
     _initProductData = _initProducts();
   }
 
-  loadCategories() async {
-    ResponseModel resp = await getAllCategories();
-    if (resp.success) {
-      List<Categories> list = List.generate(
-          resp.data.length, (i) => Categories.fromJson(resp.data[i]));
-      for (var cat in list) {
-        ResponseModel subs = await getSubCategories(cat.id);
-        cat.categoryOptions = List.generate(
-            subs.data.length, (i) => CategoryOptions.fromJson(subs.data[i]));
-        setState(() {
-          if (cat.categoryOptions!.isNotEmpty) {
-            categories.add(cat);
-          }
-        });
-      }
-      selectedCat = categories[0].id;
-      catOption = categories[0].categoryOptions![0].id;
-      _initProductData = _initProducts();
-    } else {
-      if (kDebugMode) {
-        print(resp.message);
-      }
-    }
-  }
+  // loadCategories() async {
+  //   ResponseModel resp = await getAllCategories();
+  //   if (resp.success) {
+  //     List<Categories> list = List.generate(
+  //         resp.data.length, (i) => Categories.fromJson(resp.data[i]));
+  //     for (var cat in list) {
+  //       ResponseModel subs = await getSubCategories(cat.id);
+  //       cat.categoryOptions = List.generate(
+  //           subs.data.length, (i) => CategoryOptions.fromJson(subs.data[i]));
+  //       setState(() {
+  //         if (cat.categoryOptions!.isNotEmpty) {
+  //           categories.add(cat);
+  //         }
+  //       });
+  //     }
+  //     selectedCat = categories[0].id;
+  //     catOption = categories[0].categoryOptions![0].id;
+  //     _initProductData = _initProducts();
+  //   } else {
+  //     if (kDebugMode) {
+  //       print(resp.message);
+  //     }
+  //   }
+  // }
 
   // Future<void> _initProducts() async {
   //   try {
@@ -344,28 +344,28 @@ class _HomeScreenState extends State<HomeScreen> {
   //   }
   // }
 
-  Future<void> _initProducts() async {
-    setState(() {
-      loading = true;
-    });
-    currentPage++;
-    try {
-      ResponseModel list =
-          await getProductsBySub(catOption, limit, (limit * (currentPage - 1)));
-      for (var i = 0; i < list.data.length; i++) {
-        setState(() {
-          _productList.add(Products.fromJson(list.data[i]));
-        });
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-    }
-    setState(() {
-      loading = false;
-    });
-  }
+  // Future<void> _initProducts() async {
+  //   setState(() {
+  //     loading = true;
+  //   });
+  //   currentPage++;
+  //   try {
+  //     ResponseModel list =
+  //         await getProductsBySub(catOption, limit, (limit * (currentPage - 1)));
+  //     for (var i = 0; i < list.data.length; i++) {
+  //       setState(() {
+  //         _productList.add(Products.fromJson(list.data[i]));
+  //       });
+  //     }
+  //   } catch (e) {
+  //     if (kDebugMode) {
+  //       print(e);
+  //     }
+  //   }
+  //   setState(() {
+  //     loading = false;
+  //   });
+  // }
 
 // int? status;\
 //   var catid;
@@ -420,19 +420,76 @@ class _HomeScreenState extends State<HomeScreen> {
   //   }
   // }
 
+  // Future<void> loadProducts() async {
+  //   setState(() {
+  //     loading = true;
+  //   });
+  //   currentPage++;
+  //   try {
+  //     ResponseModel list =
+  //         await getProductsBySub(catOption, limit, (limit * (currentPage - 1)));
+  //     for (var i = 0; i < list.data.length; i++) {
+  //       setState(() {
+  //         _productList.add(Products.fromJson(list.data[i]));
+  //       });
+  //     }
+  //   } catch (e) {
+  //     if (kDebugMode) {
+  //       print(e);
+  //     }
+  //   }
+  //   setState(() {
+  //     loading = false;
+  //   });
+  // }
+
+Future<void> _initProducts() async {
+    try {
+      log("mq :${MediaQuery.of(context).size.width}");
+      // ResponseModel list =
+      await getProductsBySub(catOption, limit, (limit * (currentPage - 1)))
+          .then((value) {
+        setState(() {
+          status = value.statusCode;
+        });
+        _productList = [];
+        if (value.total != null) {
+          pages = (value.total! / limit).ceil();
+        }
+        for (var i = 0; i < value.data.length; i++) {
+          setState(() {
+            _productList.add(Products.fromJson(value.data[i]));
+          });
+        }
+        setState(() {
+          loading = false;
+        });
+      });
+    } catch (e, s) {
+      if (kDebugMode) {
+        print([e.toString(), s.toString()]);
+        loading = false;
+      }
+    }
+  }
+
+  var len;
   Future<void> loadProducts() async {
     setState(() {
       loading = true;
     });
     currentPage++;
     try {
-      ResponseModel list =
-          await getProductsBySub(catOption, limit, (limit * (currentPage - 1)));
+      ResponseModel list = await getProductsBySub(
+          selectedCat, limit, (limit * (currentPage - 1)));
       for (var i = 0; i < list.data.length; i++) {
         setState(() {
           _productList.add(Products.fromJson(list.data[i]));
         });
       }
+      setState(() {
+        loading = false;
+      });
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -440,15 +497,21 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     setState(() {
       loading = false;
+      len = categories
+          .where((el) => el.id == selectedCat)
+          .first
+          .categoryOptions
+          ?.length;
     });
   }
+
 
   refresh() async {
     setState(() {
       status = 200;
     });
     // await loadCategories();
-    // _initProductData = _initProducts();
+    _initProductData = _initProducts();
   }
 
   List<String> caro = [
@@ -857,7 +920,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       //     itemCount: 4,
                       //     crossItems: 2,
                       //   ),
-                      if (_initProductData != null)
+                      //if (_initProductData != null)
                         FutureBuilder(
                             future: _initProductData,
                             builder: (c, snapshot) {
