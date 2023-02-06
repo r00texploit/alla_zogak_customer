@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:alla_zogak_customer/models/category_options.dart';
 import 'package:alla_zogak_customer/screens/sub_category.dart';
-import 'package:alla_zogak_customer/screens/top_ten.dart';
 import 'package:alla_zogak_customer/widgets/drawer_widget.dart';
 import 'package:alla_zogak_customer/widgets/theme/theme_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -12,6 +11,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:dots_indicator/dots_indicator.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -70,9 +71,10 @@ class _HomePageState extends State<HomePage> {
         //     ),
         //   );
         // } else {
-        setState(() => _currentIndex = index);
-        // }
+          setState(() => _currentIndex = index);
+        // },
       },
+
       items: <BottomNavigationBarItem>[
         const BottomNavigationBarItem(
           icon: Icon(
@@ -114,13 +116,13 @@ class _HomePageState extends State<HomePage> {
           ),
           label: 'العربة',
         ),
-        const BottomNavigationBarItem(
-          icon: Icon(
-            Icons.search,
-            size: 35,
-          ),
-          label: '',
-        ),
+        // const BottomNavigationBarItem(
+        //   icon: Icon(
+        //     Icons.search,
+        //     size: 35,
+        //   ),
+        //   label: '',
+        // ),
         BottomNavigationBarItem(
           icon: Stack(
             children: [
@@ -169,7 +171,7 @@ class _HomePageState extends State<HomePage> {
     List<Widget> pages = [
       const HomeScreen(),
       const MyCart(),
-      // TopTenScreen(),
+      // const Text(""),
       const Wishlist(),
       const MyOrder(),
     ];
@@ -249,11 +251,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late UserBloc user;
-
   int status = 200;
   List<Categories> categories = [];
-  int? selectedCat = 0;
-  int? catOption = 0;
+  int? selectedCat;
+  int? catOption;
   int limit = 10;
   int currentPage = 1;
   int pages = 0;
@@ -267,36 +268,45 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       user.loadData(context);
     });
-    // loadCategories();
+    loading = true;
+    loadCategories();
     super.initState();
     _initProductData = _initProducts();
   }
 
-  // loadCategories() async {
-  //   ResponseModel resp = await getAllCategories();
-  //   if (resp.success) {
-  //     List<Categories> list = List.generate(
-  //         resp.data.length, (i) => Categories.fromJson(resp.data[i]));
-  //     for (var cat in list) {
-  //       ResponseModel subs = await getSubCategories(cat.id);
-  //       cat.categoryOptions = List.generate(
-  //           subs.data.length, (i) => CategoryOptions.fromJson(subs.data[i]));
-  //       setState(() {
-  //         if (cat.categoryOptions!.isNotEmpty) {
-  //           categories.add(cat);
-  //         }
-  //       });
-  //     }
-  //     selectedCat = categories[0].id;
-  //     catOption = categories[0].categoryOptions![0].id;
-  //     _initProductData = _initProducts();
-  //   } else {
-  //     if (kDebugMode) {
-  //       print(resp.message);
-  //     }
-  //   }
-  // }
-
+  var catid;
+  loadCategories() async {
+    // valueonseModel value =
+    await getAllCategories().then((value) async {
+      if (value.success) {
+        List<Categories> list = List.generate(
+            value.data.length, (i) => Categories.fromJson(value.data[i]));
+        for (var cat in list) {
+          //ResponseModel subs =
+          await getSubCategories(cat.id).then((value) {
+            cat.categoryOptions = List.generate(value.data.length,
+                (i) => CategoryOptions.fromJson(value.data[i]));
+            setState(() {
+              if (cat.categoryOptions!.isNotEmpty) {
+                categories.add(cat);
+              }
+            });
+          });
+        }
+        setState(() {
+          catid = categories[0].id;
+          loading = false;
+          catOption = categories[0].categoryOptions![0].id;
+          log("hf:${catid} and : ${catOption}");
+          _initProductData = _initProducts();
+        });
+      } else {
+        if (kDebugMode) {
+          print(value.message);
+        }
+      }
+    });
+  }
   // Future<void> _initProducts() async {
   //   try {
   //     final sh = await SharedPreferences.getInstance();
@@ -344,108 +354,9 @@ class _HomeScreenState extends State<HomeScreen> {
   //   }
   // }
 
-  // Future<void> _initProducts() async {
-  //   setState(() {
-  //     loading = true;
-  //   });
-  //   currentPage++;
-  //   try {
-  //     ResponseModel list =
-  //         await getProductsBySub(catOption, limit, (limit * (currentPage - 1)));
-  //     for (var i = 0; i < list.data.length; i++) {
-  //       setState(() {
-  //         _productList.add(Products.fromJson(list.data[i]));
-  //       });
-  //     }
-  //   } catch (e) {
-  //     if (kDebugMode) {
-  //       print(e);
-  //     }
-  //   }
-  //   setState(() {
-  //     loading = false;
-  //   });
-  // }
-
-// int? status;\
-//   var catid;
-//   loadCategories() async {
-//     ResponseModel resp = await getAllCategories();
-//     if (resp.success) {
-//       List<Categories> list = List.generate(
-//           resp.data.length, (i) => Categories.fromJson(resp.data[i]));
-//       for (var cat in list) {
-//         ResponseModel subs = await getSubCategories(cat.id);
-//         cat.categoryOptions = List.generate(
-//             subs.data.length, (i) => CategoryOptions.fromJson(subs.data[i]));
-//         setState(() {
-//           if (cat.categoryOptions!.isNotEmpty) {
-//             categories.add(cat);
-//           }
-//         });
-//       }
-//       setState(() {
-//         catid = categories[selectedCat!].id;
-//         catOption = categories[selectedCat!].categoryOptions![selectedCat!].id;
-//         _initProductData = _initProducts();
-//       });
-//     } else {
-//       if (kDebugMode) {
-//         print(resp.message);
-//       }
-//     }
-//   }
-
-  // Future<void> _initProducts() async {
-  //   try {
-  //     log("cat ${catOption}");
-  //     ResponseModel list =
-  //         await getProductsBySub(catOption, limit, (limit * (currentPage - 1)));
-  //     setState(() {
-  //       status = list.statusCode;
-  //     });
-  //     _productList = [];
-  //     if (list.total != null) {
-  //       pages = (list.total! / limit).ceil();
-  //     }
-  //     for (var i = 0; i < list.data.length; i++) {
-  //       setState(() {
-  //         _productList.add(Products.fromJson(list.data[i]));
-  //       });
-  //     }
-  //   } catch (e, s) {
-  //     if (kDebugMode) {
-  //       print([e, s]);
-  //     }
-  //   }
-  // }
-
-  // Future<void> loadProducts() async {
-  //   setState(() {
-  //     loading = true;
-  //   });
-  //   currentPage++;
-  //   try {
-  //     ResponseModel list =
-  //         await getProductsBySub(catOption, limit, (limit * (currentPage - 1)));
-  //     for (var i = 0; i < list.data.length; i++) {
-  //       setState(() {
-  //         _productList.add(Products.fromJson(list.data[i]));
-  //       });
-  //     }
-  //   } catch (e) {
-  //     if (kDebugMode) {
-  //       print(e);
-  //     }
-  //   }
-  //   setState(() {
-  //     loading = false;
-  //   });
-  // }
-
-Future<void> _initProducts() async {
+  Future<void> _initProducts() async {
     try {
-      log("mq :${MediaQuery.of(context).size.width}");
+      //log("mq :${MediaQuery.of(context).size.width}");
       // ResponseModel list =
       await getProductsBySub(catOption, limit, (limit * (currentPage - 1)))
           .then((value) {
@@ -473,39 +384,6 @@ Future<void> _initProducts() async {
     }
   }
 
-  var len;
-  Future<void> loadProducts() async {
-    setState(() {
-      loading = true;
-    });
-    currentPage++;
-    try {
-      ResponseModel list = await getProductsBySub(
-          selectedCat, limit, (limit * (currentPage - 1)));
-      for (var i = 0; i < list.data.length; i++) {
-        setState(() {
-          _productList.add(Products.fromJson(list.data[i]));
-        });
-      }
-      setState(() {
-        loading = false;
-      });
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-    }
-    setState(() {
-      loading = false;
-      len = categories
-          .where((el) => el.id == selectedCat)
-          .first
-          .categoryOptions
-          ?.length;
-    });
-  }
-
-
   refresh() async {
     setState(() {
       status = 200;
@@ -522,11 +400,15 @@ Future<void> _initProducts() async {
     // "https://img.freepik.com/premium-vector/online-shopping-store-website-mobile-phone-design-smart-business-marketing-concept-horizontal-view-vector-illustration_62391-460.jpg?w=2000",
     // "https://www.digitalcommerce360.com/wp-content/uploads/2020/08/Two-thirds-of-consumers-have-increased-online-shopping-because-of-the-coronavirus.png"
   ];
-
+  int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
     user = Provider.of<UserBloc>(context);
     status = 200;
+
+
+
+    CarouselController controller = CarouselController();
     return Scaffold(
       body: status == 200
           ? ScrollConfiguration(
@@ -548,44 +430,73 @@ Future<void> _initProducts() async {
                       //   height: 10,
                       // ),
                       Container(
-                        height: 200,
+                        height: 215,
                         width: MediaQuery.of(context).size.width,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(25),
                         ),
-                        child: CarouselSlider.builder(
-                          itemBuilder: (context, i, realIndex) {
-                            return CachedNetworkImage(
-                              imageUrl: caro[i],
-                              progressIndicatorBuilder:
-                                  (context, url, downloadProgress) =>
-                                      CircularProgressIndicator(
-                                          value: downloadProgress.progress),
-                              errorWidget: (context, url, error) => Image.asset(
-                                "assets/3.png",
-                                fit: BoxFit.fill,
-                                scale: 1,
-                                errorBuilder: (context, error, stackTrace) {
-                                  if (kDebugMode) {
-                                    print(error);
-                                  }
-                                  return const Icon(Icons.info);
+                        child: Column(
+                          children: [
+                            CarouselSlider.builder(
+                              carouselController: controller,
+                              itemBuilder: (context, i, realIndex) {
+                                return CachedNetworkImage(
+                                  imageUrl: caro[i],
+                                  progressIndicatorBuilder:
+                                      (context, url, downloadProgress) =>
+                                          CircularProgressIndicator(
+                                              value: downloadProgress.progress),
+                                  errorWidget: (context, url, error) =>
+                                      Image.asset(
+                                    "assets/3.png",
+                                    fit: BoxFit.fill,
+                                    scale: 1,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      if (kDebugMode) {
+                                        print(error);
+                                      }
+                                      return const Icon(Icons.info);
+                                    },
+                                  ),
+                                );
+                              },
+                              itemCount: caro.length,
+                              options: CarouselOptions(
+                                // enlargeStrategy: CenterPageEnlargeStrategy.zoom,
+                                // autoPlayCurve: Curves.easeInOutCubic,
+                                // enlargeCenterPage: true,
+                                // pauseAutoPlayOnManualNavigate: false,
+                                // enableInfiniteScroll: false,
+                                viewportFraction: 1,
+                                // aspectRatio: 2.0,
+                                autoPlay: true,
+                                padEnds: false,
+                                onPageChanged: (index, reason) {
+                                  currentIndex = index;
+
+                                  setState(() {});
+                                  // reason
                                 },
                               ),
-                            );
-                          },
-                          itemCount: caro.length,
-                          options: CarouselOptions(
-                            // enlargeStrategy: CenterPageEnlargeStrategy.zoom,
-                            // autoPlayCurve: Curves.easeInOutCubic,
-                            // enlargeCenterPage: true,
-                            // pauseAutoPlayOnManualNavigate: false,
-                            // enableInfiniteScroll: false,
-                            viewportFraction: 1,
-                            // aspectRatio: 2.0,
-                            autoPlay: true,
-                            padEnds: false,
-                          ),
+                            ),
+                            AnimatedSmoothIndicator(
+                              activeIndex: currentIndex,
+                              count: caro.length,
+                              effect: JumpingDotEffect(
+                                  dotHeight: 10,
+                                  dotWidth: 10,
+                                  dotColor: Colors.grey,
+                                  activeDotColor:
+                                      Theme.of(context).primaryColor),
+                            ),
+                            // DotsIndicator(
+                            //   dotsCount: caro.length,
+                            //   position: currentIndex.toDouble(),
+                            //   onTap: (position) => controller.nextPage(
+                            //       duration: const Duration(milliseconds: 300),
+                            //       curve: Curves.linear),
+                            // )
+                          ],
                         ),
                       ),
                       const SizedBox(
@@ -920,58 +831,57 @@ Future<void> _initProducts() async {
                       //     itemCount: 4,
                       //     crossItems: 2,
                       //   ),
-                      //if (_initProductData != null)
-                        FutureBuilder(
-                            future: _initProductData,
-                            builder: (c, snapshot) {
-                              switch (snapshot.connectionState) {
-                                case ConnectionState.none:
-                                case ConnectionState.waiting:
-                                case ConnectionState.active:
-                                  {
-                                    return const BuildShimmer(
-                                      itemCount: 4,
-                                      crossItems: 2,
+                      // if (_initProductData != null)
+                      FutureBuilder(
+                          future: _initProductData,
+                          builder: (c, snapshot) {
+                            switch (snapshot.connectionState) {
+                              case ConnectionState.none:
+                              case ConnectionState.waiting:
+                              case ConnectionState.active:
+                                {
+                                  return const BuildShimmer(
+                                    itemCount: 4,
+                                    crossItems: 2,
+                                  );
+                                }
+                              case ConnectionState.done:
+                                {
+                                  if (_productList.isEmpty) {
+                                    return const Center(
+                                      child: Text("ليس هنالك منتجات"),
+                                    );
+                                  } else {
+                                    return Wrap(
+                                      // padding: const EdgeInsets.all(20),
+                                      // crossAxisCount: 2,
+                                      // shrinkWrap: true,
+                                      // childAspectRatio: 0.8,
+                                      // physics: const BouncingScrollPhysics(),
+                                      // mainAxisSpacing: 15,
+                                      // crossAxisSpacing: 10,
+                                      children: List.generate(
+                                        _productList.length,
+                                        (i) {
+                                          return Padding(
+                                            padding: const EdgeInsets.all(5),
+                                            child: SizedBox(
+                                              width: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      2 -
+                                                  20,
+                                              child: ProductCard(
+                                                  product: _productList[i]),
+                                            ),
+                                          );
+                                        },
+                                      ),
                                     );
                                   }
-                                case ConnectionState.done:
-                                  {
-                                    if (_productList.isEmpty) {
-                                      return const Center(
-                                        child: Text("ليس هنالك منتجات"),
-                                      );
-                                    } else {
-                                      return Wrap(
-                                        // padding: const EdgeInsets.all(20),
-                                        // crossAxisCount: 2,
-                                        // shrinkWrap: true,
-                                        // childAspectRatio: 0.8,
-                                        // physics: const BouncingScrollPhysics(),
-                                        // mainAxisSpacing: 15,
-                                        // crossAxisSpacing: 10,
-                                        children: List.generate(
-                                          _productList.length,
-                                          (i) {
-                                            return Padding(
-                                              padding: const EdgeInsets.all(5),
-                                              child: SizedBox(
-                                                width: MediaQuery.of(context)
-                                                            .size
-                                                            .width /
-                                                        2 -
-                                                    20,
-                                                child: ProductCard(
-                                                    product: _productList[i]),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      );
-                                    }
-                                  }
-                              }
-                            }),
-                      //TopTenScreen()
+                                }
+                            }
+                          }),
                       // if (selectedCat != null)
                       //   Row(
                       //     mainAxisAlignment: MainAxisAlignment.center,

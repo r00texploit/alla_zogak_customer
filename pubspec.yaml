@@ -30,6 +30,9 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   adaptive_theme: ^3.1.1
+  dots_indicator: ^2.1.0
+  responsive_framework: ^0.2.0
+  smooth_page_indicator: ^1.0.0+2
   awesome_snackbar_content: ^0.1.0
   cached_network_image: ^3.2.2
   carousel_slider: ^4.1.1
@@ -50,6 +53,7 @@ dependencies:
   shimmer: ^2.0.0
   sqflite: ^2.2.0+2
   url_launcher: ^6.1.7
+  responsive_grid: ^2.1.0
 
 # dependency_overrides:
 #   firebase_core_platform_interface: ^4.5.2

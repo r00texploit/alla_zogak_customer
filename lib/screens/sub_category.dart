@@ -7,6 +7,7 @@ import 'package:alla_zogak_customer/models/category_options.dart';
 import 'package:alla_zogak_customer/models/products.dart';
 import 'package:alla_zogak_customer/providers/user_provider.dart';
 import 'package:alla_zogak_customer/screens/sub_category_details.dart';
+import 'package:alla_zogak_customer/screens/test.dart';
 import 'package:alla_zogak_customer/widgets/product_card.dart';
 import 'package:alla_zogak_customer/widgets/shimmer.dart';
 import 'package:alla_zogak_customer/widgets/theme/theme_model.dart';
@@ -193,7 +194,8 @@ class _SubCategoryState extends State<SubCategory> {
                   //_initProductData = _initProducts();
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: ((context) =>
-                          Details(selectedCat: selectedCat))));
+                          Details(selectedCat: selectedCat)
+                          )));
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(right: 15),

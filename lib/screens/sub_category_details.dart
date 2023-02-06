@@ -31,17 +31,22 @@ class _DetailsState extends State<Details> {
   bool loading = false;
   List<Products> _productList = [];
   List<Categories> categories = [];
-  bool _isSelected = false;
+  // bool _isSelected = false;
   Future<void>? _initProductData;
   @override
   void initState() {
+    loading = true;
     initData();
     super.initState();
   }
 
   Future<void> initData() async {
     await loadCategories();
-    await _initProducts();
+    len1 = categories
+        .firstWhere((el) => el.id == widget.selectedCat)
+        .categoryOptions
+        ?.length;
+    // await _initProducts();
   }
 
   int? status;
@@ -80,7 +85,7 @@ class _DetailsState extends State<Details> {
 
   Future<void> _initProducts() async {
     try {
-      log("mq :${MediaQuery.of(context).size.width}");
+      // log("mq :${MediaQuery.of(context).size.width}");
       // ResponseModel list =
       await getProductsBySub(catOption, limit, (limit * (currentPage - 1)))
           .then((value) {
@@ -140,6 +145,7 @@ class _DetailsState extends State<Details> {
     });
   }
 
+  int? len1;
   // dynamic catLen(int id) {
   //   return categories.where((el) => el.id == id).first;
   // }
@@ -179,10 +185,11 @@ class _DetailsState extends State<Details> {
                                       child: ListView.builder(
                                         shrinkWrap: true,
                                         scrollDirection: Axis.horizontal,
-                                        itemCount:
-                                            7, //categories.where((element) => element.id == widget.selectedCat!).length,
+                                        itemCount: len1! > 5 ? 5: len1,
                                         itemBuilder:
                                             (BuildContext context, int index) {
+                                          // if(categories.length == 10 && index == )
+
                                           return Material(
                                             color:
                                                 widget.selectedCat == index &&
@@ -191,15 +198,14 @@ class _DetailsState extends State<Details> {
                                                     : Colors.white,
                                             child: GestureDetector(
                                               onTap: () {
-                                                setState(() async {
-                                                  catOption = await categories
+                                                setState(() {
+                                                  catOption = categories
                                                       .firstWhere((el) =>
                                                           el.id ==
                                                           widget.selectedCat)
                                                       .categoryOptions![index]
                                                       .id;
                                                   currentPage = 1;
-                                                  _isSelected = true;
                                                 });
                                                 _initProductData =
                                                     _initProducts();
@@ -220,22 +226,40 @@ class _DetailsState extends State<Details> {
                                                         ? Colors.white
                                                         : Theme.of(context)
                                                             .primaryColor
-                                                            .withOpacity(
-                                                                _isSelected
-                                                                    ? 0.6
-                                                                    : 0),
+                                                            .withOpacity(categories
+                                                                        .firstWhere((el) =>
+                                                                            el.id ==
+                                                                            widget
+                                                                                .selectedCat)
+                                                                        .categoryOptions![
+                                                                            index]
+                                                                        .id ==
+                                                                    catOption
+                                                                ? 0.6
+                                                                : 0),
                                                   ),
                                                   child: Column(
                                                     children: [
                                                       SizedBox(
                                                         width: 45,
                                                         height: 45,
-                                                        child: cat_image(
-                                                                    index) !=
+                                                        child: categories
+                                                                    .firstWhere(
+                                                                      (el) =>
+                                                                          el.id ==
+                                                                          widget
+                                                                              .selectedCat,
+                                                                      orElse: () =>
+                                                                          categories[
+                                                                              widget.selectedCat!],
+                                                                    )
+                                                                    .categoryOptions![
+                                                                        index]
+                                                                    .photo !=
                                                                 null
                                                             ? CachedNetworkImage(
                                                                 imageUrl:
-                                                                    "https://yoo2.smart-node.net${cat_image(index)}",
+                                                                    "https://yoo2.smart-node.net${categories.where((el) => el.id == widget.selectedCat).first.categoryOptions![index].photo}",
                                                                 progressIndicatorBuilder: (context,
                                                                         url,
                                                                         downloadProgress) =>
@@ -284,52 +308,69 @@ class _DetailsState extends State<Details> {
                                                               ),
                                                       ),
                                                       Center(
-                                                        child:
-                                                            cat_opt(index,
-                                                                        true) ==
-                                                                    catOption
-                                                                ? Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Text(
-                                                                        "${categories.firstWhere((el) => el.id == widget.selectedCat).categoryOptions![index].categoryOption}",
-                                                                        style: GoogleFonts.cairo()
-                                                                            .copyWith(
-                                                                          fontSize:
-                                                                              13,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  )
-                                                                : Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Text(
-                                                                        categories
-                                                                            .where((el) =>
-                                                                                el.id ==
-                                                                                widget.selectedCat)
-                                                                            .elementAt(0)
-                                                                            .categoryOptions![index]
-                                                                            .categoryOption,
-                                                                        style: GoogleFonts.cairo()
-                                                                            .copyWith(
-                                                                          fontSize:
-                                                                              13,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                          color:
-                                                                              Colors.black87,
-                                                                        ),
-                                                                      ),
-                                                                    ],
+                                                        child: categories
+                                                                    .firstWhere((el) =>
+                                                                        el.id ==
+                                                                        widget
+                                                                            .selectedCat)
+                                                                    .categoryOptions![
+                                                                        index]
+                                                                    .id ==
+                                                                catOption
+                                                            ? Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  Text(
+                                                                    categories
+                                                                        .firstWhere((el) =>
+                                                                            el.id ==
+                                                                            widget
+                                                                                .selectedCat)
+                                                                        .categoryOptions![
+                                                                            index]
+                                                                        .categoryOption,
+                                                                    style: GoogleFonts
+                                                                            .cairo()
+                                                                        .copyWith(
+                                                                      fontSize:
+                                                                          13,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
                                                                   ),
+                                                                ],
+                                                              )
+                                                            : Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  Text(
+                                                                    categories
+                                                                        .firstWhere((el) =>
+                                                                            el.id ==
+                                                                            widget
+                                                                                .selectedCat)
+                                                                        .categoryOptions![
+                                                                            index]
+                                                                        .categoryOption,
+                                                                    style: GoogleFonts
+                                                                            .cairo()
+                                                                        .copyWith(
+                                                                      fontSize:
+                                                                          13,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color: Colors
+                                                                          .black87,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
                                                       ),
                                                     ],
                                                   ),
@@ -340,6 +381,208 @@ class _DetailsState extends State<Details> {
                                         },
                                       ),
                                     ),
+                                    len1! < 5
+                                        ? SizedBox()
+                                        : Container(
+                                            height: 100,
+                                            width:
+                                                360, //MediaQuery.of(context).size.width,
+                                            decoration: BoxDecoration(
+                                                color: themeNotifier.isDark
+                                                    ? Theme.of(context)
+                                                        .primaryColor
+                                                    : Colors.white,
+                                                borderRadius:
+                                                    const BorderRadius.only(
+                                                        topLeft:
+                                                            Radius.circular(10),
+                                                        topRight:
+                                                            Radius.circular(
+                                                                10))),
+                                            padding: const EdgeInsets.all(5),
+                                            child: ListView.builder(
+                                              shrinkWrap: true,
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: len1! - 5,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                // if(categories.length == 10 && index == )
+                                                index = index + 5;
+                                                return Material(
+                                                  color: widget.selectedCat ==
+                                                              index &&
+                                                          index != 2
+                                                      ? Colors.black
+                                                      : Colors.white,
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        catOption = categories
+                                                            .firstWhere((el) =>
+                                                                el.id ==
+                                                                widget
+                                                                    .selectedCat)
+                                                            .categoryOptions![
+                                                                index]
+                                                            .id;
+                                                        currentPage = 1;
+                                                      });
+                                                      _initProductData =
+                                                          _initProducts();
+                                                    },
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 15),
+                                                      child: Container(
+                                                        height: 25,
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                horizontal: 20),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(25),
+                                                          color: themeNotifier
+                                                                  .isDark
+                                                              ? Colors.white
+                                                              : Theme.of(
+                                                                      context)
+                                                                  .primaryColor
+                                                                  .withOpacity(categories
+                                                                              .firstWhere((el) => el.id == widget.selectedCat)
+                                                                              .categoryOptions![index]
+                                                                              .id ==
+                                                                          catOption
+                                                                      ? 0.6
+                                                                      : 0),
+                                                        ),
+                                                        child: Column(
+                                                          children: [
+                                                            SizedBox(
+                                                              width: 45,
+                                                              height: 45,
+                                                              child: categories
+                                                                          .firstWhere(
+                                                                            (el) =>
+                                                                                el.id ==
+                                                                                widget.selectedCat,
+                                                                            orElse: () =>
+                                                                                categories[widget.selectedCat!],
+                                                                          )
+                                                                          .categoryOptions![
+                                                                              index]
+                                                                          .photo !=
+                                                                      null
+                                                                  ? CachedNetworkImage(
+                                                                      imageUrl:
+                                                                          "https://yoo2.smart-node.net${categories.where((el) => el.id == widget.selectedCat).first.categoryOptions![index].photo}",
+                                                                      progressIndicatorBuilder: (context,
+                                                                              url,
+                                                                              downloadProgress) =>
+                                                                          CircularProgressIndicator(
+                                                                              value: downloadProgress.progress),
+                                                                      errorWidget: (context,
+                                                                              url,
+                                                                              error) =>
+                                                                          Image
+                                                                              .asset(
+                                                                        "assets/3.png",
+                                                                        fit: BoxFit
+                                                                            .fill,
+                                                                        scale:
+                                                                            1,
+                                                                        errorBuilder: (context,
+                                                                            error,
+                                                                            stackTrace) {
+                                                                          if (kDebugMode) {
+                                                                            print(error);
+                                                                          }
+                                                                          return const Icon(
+                                                                              Icons.info);
+                                                                        },
+                                                                      ),
+                                                                    )
+                                                                  : Image.asset(
+                                                                      "assets/3.png",
+                                                                      fit: BoxFit
+                                                                          .fill,
+                                                                      scale: 1,
+                                                                      errorBuilder: (context,
+                                                                          error,
+                                                                          stackTrace) {
+                                                                        if (kDebugMode) {
+                                                                          print(
+                                                                              error);
+                                                                        }
+                                                                        return const Icon(
+                                                                            Icons.info);
+                                                                      },
+                                                                    ),
+                                                            ),
+                                                            Center(
+                                                              child: categories
+                                                                          .firstWhere((el) =>
+                                                                              el.id ==
+                                                                              widget.selectedCat)
+                                                                          .categoryOptions![index]
+                                                                          .id ==
+                                                                      catOption
+                                                                  ? Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .center,
+                                                                      children: [
+                                                                        Text(
+                                                                          categories
+                                                                              .firstWhere((el) => el.id == widget.selectedCat)
+                                                                              .categoryOptions![index]
+                                                                              .categoryOption,
+                                                                          style:
+                                                                              GoogleFonts.cairo().copyWith(
+                                                                            fontSize:
+                                                                                13,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    )
+                                                                  : Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .center,
+                                                                      children: [
+                                                                        Text(
+                                                                          categories
+                                                                              .firstWhere((el) => el.id == widget.selectedCat)
+                                                                              .categoryOptions![index]
+                                                                              .categoryOption,
+                                                                          style:
+                                                                              GoogleFonts.cairo().copyWith(
+                                                                            fontSize:
+                                                                                13,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            color:
+                                                                                Colors.black87,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
                                     if (_initProductData == null)
                                       const BuildShimmer(
                                         itemCount: 4,
@@ -457,35 +700,6 @@ class _DetailsState extends State<Details> {
                               ),
                             ]))))
             : Center(child: CircularProgressIndicator()));
-  }
-
-  Future cat_name(int index) async {
-    int s = await categories
-        .firstWhere((el) => el.id == widget.selectedCat)
-        .categoryOptions![index]
-        .categoryOption
-        .length;
-    return s;
-  }
-
-  dynamic cat_opt(int index, bool opt) async {
-    return opt
-        ? await categories
-            .firstWhere((el) => el.id == widget.selectedCat)
-            .categoryOptions![index]
-            .id
-        : categories
-            .firstWhere((el) => el.id == widget.selectedCat)
-            .categoryOptions![index]
-            .categoryOption
-            .toString();
-  }
-
-  Future<String?> cat_image(int index) async {
-    return await categories
-        .firstWhere((el) => el.id == widget.selectedCat)
-        .categoryOptions![index]
-        .photo;
   }
 }
 

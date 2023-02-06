@@ -50,6 +50,18 @@ Future<ResponseModel> getProductsBySub(
         headers: {"token": sh.getString("token")},
       ),
     );
+    // var filtered = [];
+    // var notfiltered = [];
+    // // log(res.data.toString());
+    // for (int i = 0; i < res.data.length; i++) {
+    //   if (res.data["data"][i]["product_option_values"]["qty"] != 0) {
+    //     filtered.add(res.data["data"][i]);
+    //   } else {
+    //     notfiltered.add(res.data["data"][i]);
+    //   }
+    // }
+    // log("filtered : ${filtered.toString()}");
+    // log("not filtered : ${notfiltered.toString()}");
     return ResponseModel.fromJson(res.data);
   } catch (e) {
     if (e is DioError) {
@@ -65,12 +77,12 @@ Future<ResponseModel> getProductsBySub(
   da.setStatus(500);
   return da;
 }
+
 Future<ResponseModel> topTenProduct() async {
   try {
     final sh = await SharedPreferences.getInstance();
     final res = await dio.get(
       "/top-ten-products",
-      
       options: Options(
         headers: {"token": sh.getString("token")},
       ),

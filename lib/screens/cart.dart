@@ -286,6 +286,7 @@ class _ListItemState extends State<ListItem> {
                   ),
                 ),
               Expanded(
+                flex:1,
                 child: Padding(
                   padding: const EdgeInsetsDirectional.only(start: 8.0),
                   child: Column(

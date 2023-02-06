@@ -59,7 +59,7 @@ class _SelectAddressesWidgetState extends State<SelectAddressesWidget> {
               ),
             ),
             height: 5,
-            width: MediaQuery.of(context).size.width * .8,
+            width: MediaQuery.of(context).size.width * .6,
           ),
         ),
         if (!loading)
@@ -86,8 +86,8 @@ class _SelectAddressesWidgetState extends State<SelectAddressesWidget> {
                     isEmpty: city.text.isEmpty,
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
-                        menuMaxHeight: 10,
-                        itemHeight: kMinInteractiveDimension,
+                        menuMaxHeight: 150,
+                        itemHeight: kMinInteractiveDimension + 10,
                         value: city.text,
                         isDense: true,
                         onChanged: (String? newValue) {

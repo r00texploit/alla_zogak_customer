@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:provider/provider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../models/product_colors.dart';
 import '../models/products.dart';
 import '../screens/cart.dart';
@@ -267,6 +268,7 @@ class _ProductScState extends State<ProductSc> with TickerProviderStateMixin {
     );
   }
 
+  int currentIndex = 0;
   Widget _buildProductDetailsDisplay(Products productss, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -468,82 +470,99 @@ class _ProductScState extends State<ProductSc> with TickerProviderStateMixin {
                               itemCount: widget.product.productImages!.length,
                               carouselController: _controller,
                               options: CarouselOptions(
-                                enlargeStrategy:
-                                    CenterPageEnlargeStrategy.scale,
-                                enlargeCenterPage: true,
-                                pauseAutoPlayOnManualNavigate: false,
+                                // enlargeStrategy:
+                                //     CenterPageEnlargeStrategy.scale,
+                                // enlargeCenterPage: true,
+                                // pauseAutoPlayOnManualNavigate: false,
+                                viewportFraction: 1,
+                                padEnds: false,
                                 autoPlay: false,
+                                onPageChanged: (index, reason) {
+                                  currentIndex = index;
+
+                                  setState(() {});
+                                  // reason
+                                },
                               ),
                             ),
-                            Positioned(
-                              top: 100,
-                              width: MediaQuery.of(context).size.width,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                mainAxisSize: MainAxisSize.max,
-                                children: const <Widget>[
-                                  // ElevatedButton(
-                                  //   style: ButtonStyle(
-                                  //     shape: MaterialStateProperty.all(
-                                  //         const CircleBorder()),
-                                  //   ),
-                                  //   onPressed: () => _controller.previousPage(),
-                                  //   child: const Icon(Icons.arrow_back),
-                                  // ),
-                                  // ElevatedButton(
-                                  //   style: ButtonStyle(
-                                  //     shape: MaterialStateProperty.all(
-                                  //         const CircleBorder()),
-                                  //   ),
-                                  //   onPressed: () => _controller.nextPage(),
-                                  //   child: const Icon(Icons.arrow_forward),
-                                  // ),
-                                ],
-                              ),
-                            ),
+                            // Positioned(
+                            //   top: 100,
+                            //   width: MediaQuery.of(context).size.width,
+                            //   child: Row(
+                            //     mainAxisAlignment:
+                            //         MainAxisAlignment.spaceBetween,
+                            //     mainAxisSize: MainAxisSize.max,
+                            //     children: const <Widget>[
+                            //       // ElevatedButton(
+                            //       //   style: ButtonStyle(
+                            //       //     shape: MaterialStateProperty.all(
+                            //       //         const CircleBorder()),
+                            //       //   ),
+                            //       //   onPressed: () => _controller.previousPage(),
+                            //       //   child: const Icon(Icons.arrow_back),
+                            //       // ),
+                            //       // ElevatedButton(
+                            //       //   style: ButtonStyle(
+                            //       //     shape: MaterialStateProperty.all(
+                            //       //         const CircleBorder()),
+                            //       //   ),
+                            //       //   onPressed: () => _controller.nextPage(),
+                            //       //   child: const Icon(Icons.arrow_forward),
+                            //       // ),
+                            //     ],
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
                     ),
                   ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                    widget.product.productImages!.length,
-                    (i) => Container(
-                      width: 50,
-                      height: 50,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 5,
-                        vertical: 5,
-                      ),
-                      child: GestureDetector(
-                        onTap: () => _controller.animateToPage(i),
-                        child: CachedNetworkImage(
-                          imageUrl:
-                              "https://yoo2.smart-node.net${widget.product.productImages![i].image}",
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) =>
-                                  CircularProgressIndicator(
-                                      value: downloadProgress.progress),
-                          errorWidget: (context, url, error) => Image.asset(
-                            "assets/3.png",
-                            fit: BoxFit.fill,
-                            scale: 1,
-                            errorBuilder: (context, error, stackTrace) {
-                              if (kDebugMode) {
-                                print(error);
-                              }
-                              return const Icon(Icons.info);
-                            },
-                          ),
-                        ),
-                        // )
-                      ),
-                    ),
-                  ),
+                AnimatedSmoothIndicator(
+                  activeIndex: currentIndex,
+                  count: widget.product.productImages!.length,
+                  effect: JumpingDotEffect(
+                      dotHeight: 10,
+                      dotWidth: 10,
+                      dotColor: Colors.grey,
+                      activeDotColor: Theme.of(context).primaryColor),
                 ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: List.generate(
+                //     widget.product.productImages!.length,
+                //     (i) => Container(
+                //       width: 50,
+                //       height: 50,
+                //       padding: const EdgeInsets.symmetric(
+                //         horizontal: 5,
+                //         vertical: 5,
+                //       ),
+                //       child: GestureDetector(
+                //         onTap: () => _controller.animateToPage(i),
+                //         child: CachedNetworkImage(
+                //           imageUrl:
+                //               "https://yoo2.smart-node.net${widget.product.productImages![i].image}",
+                //           progressIndicatorBuilder:
+                //               (context, url, downloadProgress) =>
+                //                   CircularProgressIndicator(
+                //                       value: downloadProgress.progress),
+                //           errorWidget: (context, url, error) => Image.asset(
+                //             "assets/3.png",
+                //             fit: BoxFit.fill,
+                //             scale: 1,
+                //             errorBuilder: (context, error, stackTrace) {
+                //               if (kDebugMode) {
+                //                 print(error);
+                //               }
+                //               return const Icon(Icons.info);
+                //             },
+                //           ),
+                //         ),
+                //         // )
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 _buildProductDetailsDisplay(widget.product, context),
               ],
             ),

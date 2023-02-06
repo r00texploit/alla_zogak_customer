@@ -136,9 +136,10 @@ class _ProductCardState extends State<ProductCard> {
               builder: (context) => ProductSc(product: widget.product)));
         },
         child: Stack(
+          fit: StackFit.passthrough,
           children: [
             Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
@@ -191,11 +192,18 @@ class _ProductCardState extends State<ProductCard> {
                 ),
                 SafeArea(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.start,
+                        //   crossAxisAlignment: CrossAxisAlignment.start,
+                        //   children: [
                         Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               "${widget.product.discount != null ? (widget.product.price / (widget.product.discount! * 0.1)).ceil() : widget.product.price} ج.س",
@@ -206,39 +214,24 @@ class _ProductCardState extends State<ProductCard> {
                               maxLines: 1,
                             ),
                             if (widget.product.discount != null)
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    "${widget.product.discount}%",
-                                    style: GoogleFonts.cairo().copyWith(
-                                      color: Colors.red,
-                                      fontSize: 12,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                    overflow: TextOverflow.fade,
-                                    maxLines: 1,
-                                  ),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    "${widget.product.price} ج.س",
-                                    style: GoogleFonts.cairo().copyWith(
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.red,
-                                      fontSize: 11,
-                                      decoration: TextDecoration.lineThrough,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
-                                ],
+                              Text(
+                                "${widget.product.price} ج.س",
+                                style: GoogleFonts.cairo().copyWith(
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.red,
+                                  fontSize: 11,
+                                  decoration: TextDecoration.lineThrough,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
                               ),
-                            // Center(
-                            //   child:
-
-                            // ),
                           ],
                         ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        //   ],
+                        // ),
                         if (widget.product.productOptions != null &&
                             widget.product.productOptions!.isNotEmpty &&
                             widget.product.productOptions![0]
@@ -267,41 +260,115 @@ class _ProductCardState extends State<ProductCard> {
                               ),
                             ),
                           ),
+                        // Positioned(
+                        //   top: 0,
+                        //   bottom: 0,
+                        //   left: 0,
+                        //   child:
+                        InkWell(
+                          onTap: () async {
+                            setState(() {
+                              loadingWish = true;
+                            });
+                            if (wishlist.verify(widget.product.id)) {
+                              await wishlist.remove(widget.product.id, context);
+                            } else {
+                              await wishlist.add(widget.product, context);
+                            }
+                            if (mounted) {
+                              setState(() {
+                                loadingWish = false;
+                              });
+                            }
+                          },
+                          child: Container(
+                            width: 45,
+                            height: 45,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: Center(
+                              child: !loadingWish
+                                  ? Icon(
+                                      wishlist.verify(widget.product.id)
+                                          ? Icons.favorite
+                                          : Icons.favorite_border_sharp,
+                                      color: Colors.grey,
+                                      size: 20, // fav size is here
+                                    )
+                                  : const SizedBox(
+                                      width: 35,
+                                      height: 35,
+                                      child: CircularProgressIndicator(),
+                                    ),
+                            ),
+                          ),
+                        ),
+                        if (widget.product.discount != null)
+                          // Positioned(
+                          //   bottom: 0,
+                          //   right: 0,
+                          //   child:
+                          Container(
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.red),
+                              borderRadius: BorderRadius.circular(50),
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            child: Center(
+                              child: Text(
+                                "${widget.product.discount}%",
+                                style: GoogleFonts.cairo().copyWith(
+                                  color: Colors.red,
+                                  fontSize: 12,
+                                ),
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.fade,
+                                maxLines: 1,
+                              ),
+                            ),
+                            // ),
+                          ),
+                        // ),
                       ],
                     ),
                   ),
                 )
               ],
             ),
-            if (widget.product.discount != null)
-              Positioned(
-                top: 0,
-                left: 0,
-                child: Container(
-                  width: 30,
-                  height: 30,
-                  // decoration: BoxDecoration(
-                  //   border: Border.all(color: Colors.red),
-                  //   // borderRadius: BorderRadius.circular(50),
-                  //   color: Theme.of(context).primaryColor,
-                  // ),
-                  // child: Center(
-                  //   child: Text(
-                  //     "${widget.product.discount}%",
-                  //     style: GoogleFonts.cairo().copyWith(
-                  //       color: Colors.red,
-                  //       fontSize: 12,
-                  //     ),
-                  //     textAlign: TextAlign.center,
-                  //     overflow: TextOverflow.fade,
-                  //     maxLines: 1,
-                  //   ),
-                  // ),
-                ),
-              ),
+            // if (widget.product.discount != null)
+            //   // Positioned(
+            //   //   bottom: 0,
+            //   //   right: 0,
+            //   //   child:
+            //     Container(
+            //       width: 30,
+            //       height: 30,
+            //       decoration: BoxDecoration(
+            //         border: Border.all(color: Colors.red),
+            //         borderRadius: BorderRadius.circular(50),
+            //         color: Theme.of(context).primaryColor,
+            //       ),
+            //       child: Center(
+            //         child: Text(
+            //           "${widget.product.discount}%",
+            //           style: GoogleFonts.cairo().copyWith(
+            //             color: Colors.red,
+            //             fontSize: 12,
+            //           ),
+            //           textAlign: TextAlign.center,
+            //           overflow: TextOverflow.fade,
+            //           maxLines: 1,
+            //         ),
+            //       ),
+            //     // ),
+            //   ),
             // Positioned(
             //   top: 0,
-            //   right: 0,
+            //   bottom: 0,
+            //   left: 0,
             //   child: InkWell(
             //     onTap: () async {
             //       setState(() {
@@ -342,50 +409,6 @@ class _ProductCardState extends State<ProductCard> {
             //     ),
             //   ),
             // ),
-            Positioned(
-              top: 0,
-              // bottom: 0,
-              left: 110,
-              child: InkWell(
-                onTap: () async {
-                  setState(() {
-                    loadingWish = true;
-                  });
-                  if (wishlist.verify(widget.product.id)) {
-                    await wishlist.remove(widget.product.id, context);
-                  } else {
-                    await wishlist.add(widget.product, context);
-                  }
-                  if (mounted) {
-                    setState(() {
-                      loadingWish = false;
-                    });
-                  }
-                },
-                child: Container(
-                  width: 45,
-                  height: 45,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  child: Center(
-                    child: !loadingWish
-                        ? Icon(
-                            wishlist.verify(widget.product.id)
-                                ? Icons.favorite
-                                : Icons.favorite_border_sharp,
-                            color: Colors.grey,
-                            size: 20, // fav size is here
-                          )
-                        : const SizedBox(
-                            width: 35,
-                            height: 35,
-                            child: CircularProgressIndicator(),
-                          ),
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),

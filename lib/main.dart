@@ -5,6 +5,7 @@ import 'package:alla_zogak_customer/widgets/theme/theme_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:responsive_framework/responsive_wrapper.dart';
 import '../models/products.dart';
 import '../providers/address_provider.dart';
 import '../providers/cart_provider.dart';
@@ -47,6 +48,20 @@ class MyApp extends StatelessWidget {
         child: Consumer<ThemeModel>(
             builder: (context, ThemeModel themeNotifier, child) {
           return MaterialApp(
+            builder: (context, child) => ResponsiveWrapper.builder(
+              child,
+              // maxWidth: 1920,
+              // minWidth: 750,
+              debugLog: true,
+              // mediaQueryData: MediaQueryData(),
+              defaultScale: true,
+              breakpoints: [
+                const ResponsiveBreakpoint.autoScale(370, name: MOBILE,scaleFactor: 0),
+                // const ResponsiveBreakpoint.autoScale(800, name: TABLET),
+                // const ResponsiveBreakpoint.resize(1000, name: DESKTOP),
+              ],
+              // background: Container(color: Color(0xFFF5F5F5))
+            ),
             debugShowCheckedModeBanner: false,
             title: 'Super Digital Market',
             // ignore: unrelated_type_equality_checks

@@ -1,4 +1,5 @@
 import 'package:alla_zogak_customer/providers/wishlist_provider.dart';
+import 'package:alla_zogak_customer/widgets/theme/theme_model.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -42,12 +43,13 @@ class _WishlistState extends State<Wishlist> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeModel themeNotifier = ThemeModel();
     var brightness = MediaQuery.of(context).platformBrightness;
     wishlist = Provider.of<WishlistBloc>(context);
     return Scaffold(
-      backgroundColor: brightness == Brightness.light
-          ? Colors.white
-          : Theme.of(context).primaryColor,
+      backgroundColor:
+          //themeNotifier.isDark ?
+          Colors.white, //: Theme.of(context).primaryColor,
       body: wishlist.products.isEmpty && loading
           ? const BuildShimmer(
               itemCount: 4,
@@ -57,12 +59,11 @@ class _WishlistState extends State<Wishlist> {
               ? RefreshIndicator(
                   onRefresh: doRefresh,
                   child: Center(
-                    child: Text("ليس هنالك منتجات في المفضله",style: GoogleFonts.cairo(
-                      color: brightness == Brightness.light
-                                        ? Colors.black
-                                        : Theme.of(context)
-                                            .primaryColor
-                    )),
+                    child: Text("ليس هنالك منتجات في المفضله",
+                        style: GoogleFonts.cairo(
+                            color: brightness == Brightness.light
+                                ? Colors.black
+                                : Theme.of(context).primaryColor)),
                   ),
                 )
               : RefreshIndicator(
