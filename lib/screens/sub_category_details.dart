@@ -171,7 +171,7 @@ class _DetailsState extends State<Details> {
                                 child: Column(
                                   children: [
                                     Container(
-                                      height: 100,
+                                      height: 50,
                                       width:
                                           360, //MediaQuery.of(context).size.width,
                                       decoration: BoxDecoration(
@@ -183,9 +183,9 @@ class _DetailsState extends State<Details> {
                                               topRight: Radius.circular(10))),
                                       padding: const EdgeInsets.all(5),
                                       child: ListView.builder(
-                                        shrinkWrap: true,
+                                        shrinkWrap: false,
                                         scrollDirection: Axis.horizontal,
-                                        itemCount: len1! > 5 ? 5: len1,
+                                        itemCount: len1! > 5 ? 5 : len1,
                                         itemBuilder:
                                             (BuildContext context, int index) {
                                           // if(categories.length == 10 && index == )
@@ -214,10 +214,9 @@ class _DetailsState extends State<Details> {
                                                 padding: const EdgeInsets.only(
                                                     right: 15),
                                                 child: Container(
-                                                  height: 25,
+                                                  height: 15,
                                                   padding: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal: 20),
+                                                      .symmetric(horizontal: 5),
                                                   decoration: BoxDecoration(
                                                     borderRadius:
                                                         BorderRadius.circular(
@@ -241,8 +240,8 @@ class _DetailsState extends State<Details> {
                                                   child: Column(
                                                     children: [
                                                       SizedBox(
-                                                        width: 45,
-                                                        height: 45,
+                                                        width: 15,
+                                                        height: 15,
                                                         child: categories
                                                                     .firstWhere(
                                                                       (el) =>
@@ -384,7 +383,7 @@ class _DetailsState extends State<Details> {
                                     len1! < 5
                                         ? SizedBox()
                                         : Container(
-                                            height: 100,
+                                            height: 50,
                                             width:
                                                 360, //MediaQuery.of(context).size.width,
                                             decoration: BoxDecoration(
@@ -434,13 +433,13 @@ class _DetailsState extends State<Details> {
                                                     child: Padding(
                                                       padding:
                                                           const EdgeInsets.only(
-                                                              right: 15),
+                                                              right: 5),
                                                       child: Container(
-                                                        height: 25,
+                                                        height: 15,
                                                         padding:
                                                             const EdgeInsets
                                                                     .symmetric(
-                                                                horizontal: 20),
+                                                                horizontal: 5),
                                                         decoration:
                                                             BoxDecoration(
                                                           borderRadius:
@@ -463,8 +462,8 @@ class _DetailsState extends State<Details> {
                                                         child: Column(
                                                           children: [
                                                             SizedBox(
-                                                              width: 45,
-                                                              height: 45,
+                                                              width: 15,
+                                                              height: 15,
                                                               child: categories
                                                                           .firstWhere(
                                                                             (el) =>

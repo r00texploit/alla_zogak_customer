@@ -42,6 +42,7 @@ class _ProductCardState extends State<ProductCard> {
     try {
       return CachedNetworkImage(
         imageUrl: uri,
+
         progressIndicatorBuilder: (context, url, downloadProgress) =>
             CircularProgressIndicator(value: downloadProgress.progress),
         errorWidget: (context, url, error) => Image.asset(
@@ -56,7 +57,8 @@ class _ProductCardState extends State<ProductCard> {
             return const Icon(Icons.info);
           },
         ),
-        fit: BoxFit.fitWidth,
+        fit: BoxFit.cover,
+        // :,
       );
     } catch (e) {
       if (kDebugMode) {
