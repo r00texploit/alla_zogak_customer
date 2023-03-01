@@ -104,3 +104,30 @@ Future<ResponseModel> topTenProduct() async {
   da.setStatus(500);
   return da;
 }
+
+getPanner() async {
+  try {
+    final sh = await SharedPreferences.getInstance();
+    final res = await dio.get(
+      "/workspace",
+      // options: Options(
+      //   headers: {"token": sh.getString("token")},
+      // ),
+    );
+    log("data :${res.data}");
+    return ResponseModel.fromJson(res.data);
+  } catch (e) {
+    if (e is DioError) {
+      if (kDebugMode) {
+        print(e.message);
+        print(e.response?.data);
+      }
+      final dt = ResponseModel.fromJson({'status': false});
+      dt.setStatus(500);
+      return dt;
+    }
+  }
+  final da = ResponseModel(success: false, statusCode: 500);
+  da.setStatus(500);
+  return da;
+}

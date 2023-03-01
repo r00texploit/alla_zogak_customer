@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:alla_zogak_customer/models/category_options.dart';
+import 'package:alla_zogak_customer/models/panner.dart';
 import 'package:alla_zogak_customer/screens/sub_category.dart';
 import 'package:alla_zogak_customer/widgets/drawer_widget.dart';
 import 'package:alla_zogak_customer/widgets/theme/theme_model.dart';
@@ -71,7 +72,7 @@ class _HomePageState extends State<HomePage> {
         //     ),
         //   );
         // } else {
-          setState(() => _currentIndex = index);
+        setState(() => _currentIndex = index);
         // },
       },
 
@@ -262,7 +263,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Products> _productList = [];
   Future<void>? _initProductData;
   ThemeModel themeNotifier = ThemeModel();
-
+  var pan;
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -270,6 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     loading = true;
     loadCategories();
+    pan = getpremossion();
     super.initState();
     _initProductData = _initProducts();
   }
@@ -392,21 +394,56 @@ class _HomeScreenState extends State<HomeScreen> {
     _initProductData = _initProducts();
   }
 
-  List<String> caro = [
-    "https://yoo2.smart-node.net/images/310F15F7052020EEBDCE.jpg",
-    "https://yoo2.smart-node.net/images/981DA98B5AF10D00EC7D.jpg",
-    "https://yoo2.smart-node.net/images/534DE410806C81619375.jpg"
-    // "https://cdn.shopify.com/s/files/1/0210/2968/3222/articles/trending_products_to_sell_in_India_ad8fc9e0-5052-44bf-bd93-7bec4335f5ee.jpg?v=1647462399",
-    // "https://img.freepik.com/premium-vector/online-shopping-store-website-mobile-phone-design-smart-business-marketing-concept-horizontal-view-vector-illustration_62391-460.jpg?w=2000",
-    // "https://www.digitalcommerce360.com/wp-content/uploads/2020/08/Two-thirds-of-consumers-have-increased-online-shopping-because-of-the-coronavirus.png"
-  ];
+  List<Panner> caro = [];
+
+  getpremossion() async {
+    // loading = true;
+    try {
+      await getPanner().then((value) {
+        loading = true;
+        log("message33: $value");
+        setState(() {
+          status = value.statusCode;
+        });
+        // _productList = [];
+        // if (value.total != null) {
+        //   pages = (value.total! / limit).ceil();
+        // }
+        for (var i = 0; i < value.data.length; i++) {
+          log("meCssage4:${value.data.length}");
+          setState(() {
+            // ignore: prefer_interpolation_to_compose_strings
+            // var str = "https://yoo2.smart-node.net/" + value.data[i]["image"];
+            // log("message1: ${caro[i].image}");
+            caro.add(Panner.fromJson(value.data[i]));
+            log("message2: ${caro[i].image}");
+          });
+        }
+        // setState(() {
+        //   loading = false;
+        // });
+      });
+    } catch (e, s) {
+      if (kDebugMode) {
+        print([e.toString(), s.toString()]);
+        loading = false;
+      }
+    }
+  }
+
+  // [
+  //   "https://yoo2.smart-node.net/images/310F15F7052020EEBDCE.jpg",
+  //   "https://yoo2.smart-node.net/images/981DA98B5AF10D00EC7D.jpg",
+  //   "https://yoo2.smart-node.net/images/534DE410806C81619375.jpg"
+  //   // "https://cdn.shopify.com/s/files/1/0210/2968/3222/articles/trending_products_to_sell_in_India_ad8fc9e0-5052-44bf-bd93-7bec4335f5ee.jpg?v=1647462399",
+  //   // "https://img.freepik.com/premium-vector/online-shopping-store-website-mobile-phone-design-smart-business-marketing-concept-horizontal-view-vector-illustration_62391-460.jpg?w=2000",
+  //   // "https://www.digitalcommerce360.com/wp-content/uploads/2020/08/Two-thirds-of-consumers-have-increased-online-shopping-because-of-the-coronavirus.png"
+  // ];
   int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
     user = Provider.of<UserBloc>(context);
     status = 200;
-
-
 
     CarouselController controller = CarouselController();
     return Scaffold(
@@ -441,7 +478,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               carouselController: controller,
                               itemBuilder: (context, i, realIndex) {
                                 return CachedNetworkImage(
-                                  imageUrl: caro[i],
+                                  imageUrl: caro[i].image,
                                   progressIndicatorBuilder:
                                       (context, url, downloadProgress) =>
                                           CircularProgressIndicator(
@@ -460,7 +497,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 );
                               },
-                              itemCount: caro.length,
+                              itemCount: 3,
                               options: CarouselOptions(
                                 // enlargeStrategy: CenterPageEnlargeStrategy.zoom,
                                 // autoPlayCurve: Curves.easeInOutCubic,
@@ -481,7 +518,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             AnimatedSmoothIndicator(
                               activeIndex: currentIndex,
-                              count: caro.length,
+                              count: 3,
                               effect: JumpingDotEffect(
                                   dotHeight: 10,
                                   dotWidth: 10,
